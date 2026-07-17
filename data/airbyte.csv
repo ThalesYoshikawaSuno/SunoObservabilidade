@@ -1,0 +1,4 @@
+id,nome,status_conexao,tipo_agendamento,ultimo_status,ultima_execucao,taxa_sucesso_pct,execucoes_amostra,pulso
+56f0de5d,Instagram MEDIA → Snowflake - RAW_MARKETING - INSTAGRAM,active,cron,success,2026-07-14T01:00:00+00:00,96.7,30,success|success|success|failed|success|success|success|success|success|success
+a9a043df,HubSpot → Snowflake - RAW_MARKETING_CRM,active,scheduled,success,2026-07-13T14:00:00+00:00,80.0,5,success|success|failed|success|success
+d922614d,Monday - CONSULTORIA STVM → Snowflake,inactive,manual,success,2025-11-02T09:00:00+00:00,100.0,4,success|success|success|success

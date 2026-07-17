@@ -1,0 +1,3 @@
+id,nome,ultimo_status,ultima_execucao,taxa_sucesso_pct,execucoes_amostra,pulso
+dag-001,dag_marketshare_daily,success,2026-07-14T06:00:00+00:00,98.0,10,success|success|success|success|success|success|success|success|success|success
+dag-014,dag_snowflake_credits_report,failed,2026-07-14T05:30:00+00:00,70.0,10,success|success|failed|success|success|failed|success|success|success|failed

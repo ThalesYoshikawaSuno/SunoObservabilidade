@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Semanal — Dados Suno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  :root {
+    --bg: #0F1419; --surface: #171E26; --surface-2: #1E2731; --border: #2A333D;
+    --text: #E8ECEF; --text-dim: #8B95A1; --text-faint: #5C6672;
+    --success: #4FBA8A; --warning: #E8A33D; --danger: #E0615D; --skip: #6B7684; --brand: #6C8EEF;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 0 24px; }
+  .header-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 10px; }
+  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(79,186,138,0.15); }
+  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+
+  nav.tabs { max-width: 1180px; margin: 0 auto; display: flex; gap: 4px; padding: 0 24px; }
+  nav.tabs button { font-family: var(--sans); font-weight: 600; font-size: 13.5px; color: var(--text-dim); background: none; border: none; padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.active { color: var(--text); border-color: var(--brand); }
+  nav.tabs button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
+  section.panel { display: none; }
+  section.panel.active { display: block; animation: fadein .25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: none; } }
+
+  h1.panel-title { font-family: var(--mono); font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+  p.panel-sub { color: var(--text-dim); font-size: 13.5px; margin: 0 0 28px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .kpi .value { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .kpi .label { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+  .kpi.success .value { color: var(--success); }
+  .kpi.warning .value { color: var(--warning); }
+  .kpi.danger .value { color: var(--danger); }
+
+  table.data { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.data th { text-align: left; font-weight: 600; color: var(--text-dim); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  table.data td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.data tr:hover td { background: var(--surface-2); }
+  table.data td.name { font-weight: 500; max-width: 340px; }
+
+  .status-dot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; }
+  .status-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+  .status-dot.success::before, .status-dot.aligned::before { background: var(--success); }
+  .status-dot.failed::before { background: var(--danger); }
+  .status-dot.running::before { background: var(--warning); }
+  .status-dot.skipped::before, .status-dot.sem_execucao::before { background: var(--skip); }
+  .status-dot.inactive::before { background: var(--text-faint); }
+
+  .pulse { display: flex; gap: 2px; align-items: flex-end; height: 18px; }
+  .pulse .tick { width: 5px; border-radius: 1px; background: var(--skip); }
+  .pulse .tick.success { background: var(--success); height: 100%; }
+  .pulse .tick.failed { background: var(--danger); height: 100%; }
+  .pulse .tick.running { background: var(--warning); height: 70%; }
+  .pulse .tick.skipped { background: var(--skip); height: 40%; }
+  .pulse .tick.unknown { background: var(--border); height: 30%; }
+
+  .badge { font-family: var(--mono); font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+  .empty { color: var(--text-faint); font-size: 13px; padding: 24px 0; text-align: center; }
+  .subgrid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .subgrid { grid-template-columns: 1fr; } }
+  h2.sub-title { font-family: var(--mono); font-size: 14px; font-weight: 600; margin: 0 0 12px; color: var(--text-dim); }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .table-scroll table.data { min-width: 480px; }
+  footer { text-align: center; color: var(--text-faint); font-size: 12px; padding: 24px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand"><span class="dot"></span>dashboard semanal · dados suno</div>
+    <div class="updated" id="global-updated">carregando…</div>
+  </div>
+  <nav class="tabs">
+    <button data-panel="airbyte" class="active">Airbyte</button>
+    <button data-panel="airflow">Airflow</button>
+    <button data-panel="snowflake">Snowflake</button>
+  </nav>
+</header>
+
+<main>
+  <section class="panel active" id="panel-airbyte">
+    <h1 class="panel-title">Airbyte</h1>
+    <p class="panel-sub">Todas as conexões — atualizado semanalmente.</p>
+    <div class="kpi-row" id="airbyte-kpis"></div>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th>Conexão</th><th>Estado</th><th>Agendamento</th><th>Último status</th><th>Última execução</th><th>Taxa sucesso</th><th>Pulso (recente →)</th></tr></thead>
+        <tbody id="airbyte-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-airflow">
+    <h1 class="panel-title">Airflow</h1>
+    <p class="panel-sub">Todas as DAGs — atualizado semanalmente.</p>
+    <div class="kpi-row" id="airflow-kpis"></div>
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th>DAG</th><th>Último status</th><th>Última execução</th><th>Taxa sucesso</th><th>Pulso (recente →)</th></tr></thead>
+        <tbody id="airflow-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-snowflake">
+    <h1 class="panel-title">Snowflake</h1>
+    <p class="panel-sub">Cobertura do catálogo, qualidade de dados (DQ) e contratos de dados (CD).</p>
+    <div class="kpi-row" id="snowflake-kpis"></div>
+    <div class="subgrid">
+      <div>
+        <h2 class="sub-title">Falhas de qualidade de dados (DQ)</h2>
+        <div class="table-scroll"><table class="data" id="dq-table"><thead><tr><th>Teste</th><th>Entidade</th><th>Resultado</th></tr></thead><tbody></tbody></table></div>
+      </div>
+      <div>
+        <h2 class="sub-title">Contratos de dados (CD)</h2>
+        <div class="table-scroll"><table class="data" id="cd-table"><thead><tr><th>Contrato</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>dados atualizados semanalmente via GitHub Actions · fetch_dashboard_data.py</footer>
+
+<script>
+const STATUS_LABEL = { success: 'Sucesso', failed: 'Falhou', running: 'Rodando', skipped: 'Pulado', sem_execucao: 'Sem execução', active: 'Ativa', inactive: 'Inativa', aligned: 'Alinhado', unknown: '—' };
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+function statusDot(status) {
+  const key = (status || '').toLowerCase();
+  return `<span class="status-dot ${key}">${STATUS_LABEL[key] || status || '—'}</span>`;
+}
+function pulseHtml(pulseStr) {
+  const pulse = (pulseStr || '').split('|').filter(Boolean);
+  if (!pulse.length) return '<span class="empty" style="padding:0;">sem histórico</span>';
+  return `<div class="pulse">${pulse.map(p => `<div class="tick ${p}" title="${STATUS_LABEL[p] || p}"></div>`).join('')}</div>`;
+}
+function kpiTile(value, label, tone) {
+  return `<div class="kpi ${tone || ''}"><div class="value">${value}</div><div class="label">${label}</div></div>`;
+}
+
+function loadCSV(name) {
+  return new Promise((resolve) => {
+    Papa.parse(`./data/${name}?t=${Date.now()}`, {
+      download: true, header: true, skipEmptyLines: true,
+      complete: (res) => resolve(res.data),
+      error: () => resolve([]),
+    });
+  });
+}
+
+async function renderAirbyte() {
+  const rows = await loadCSV('airbyte.csv');
+  const total = rows.length;
+  const active = rows.filter(r => r.status_conexao === 'active').length;
+  const inactive = total - active;
+  const comFalha = rows.filter(r => r.ultimo_status === 'failed').length;
+
+  document.getElementById('airbyte-kpis').innerHTML = [
+    kpiTile(total || '—', 'Conexões totais'),
+    kpiTile(active || '—', 'Ativas', 'success'),
+    kpiTile(inactive || '—', 'Pausadas/inativas'),
+    kpiTile(comFalha, 'Com falha (última exec.)', comFalha > 0 ? 'danger' : ''),
+  ].join('');
+
+  const trs = rows.map(r => `
+    <tr>
+      <td class="name">${r.nome}</td>
+      <td>${statusDot(r.status_conexao)}</td>
+      <td><span class="badge">${r.tipo_agendamento || '—'}</span></td>
+      <td>${statusDot(r.ultimo_status)}</td>
+      <td style="font-family: var(--mono); color: var(--text-dim); font-size:12.5px;">${fmtDate(r.ultima_execucao)}</td>
+      <td style="font-family: var(--mono);">${r.taxa_sucesso_pct !== '' ? r.taxa_sucesso_pct + '%' : '—'}</td>
+      <td>${pulseHtml(r.pulso)}</td>
+    </tr>`).join('');
+  document.getElementById('airbyte-table').innerHTML = trs || '<tr><td class="empty" colspan="7">Sem dados ainda.</td></tr>';
+}
+
+async function renderAirflow() {
+  const rows = await loadCSV('airflow.csv');
+  const total = rows.length;
+  const ok = rows.filter(r => r.ultimo_status === 'success').length;
+  const failed = rows.filter(r => r.ultimo_status === 'failed').length;
+  const running = rows.filter(r => r.ultimo_status === 'running').length;
+
+  document.getElementById('airflow-kpis').innerHTML = [
+    kpiTile(total || '—', 'DAGs totais'),
+    kpiTile(ok, 'Última exec. OK', 'success'),
+    kpiTile(failed, 'Última exec. falhou', failed > 0 ? 'danger' : ''),
+    kpiTile(running, 'Rodando agora', 'warning'),
+  ].join('');
+
+  const trs = rows.map(r => `
+    <tr>
+      <td class="name">${r.nome}</td>
+      <td>${statusDot(r.ultimo_status)}</td>
+      <td style="font-family: var(--mono); color: var(--text-dim); font-size:12.5px;">${fmtDate(r.ultima_execucao)}</td>
+      <td style="font-family: var(--mono);">${r.taxa_sucesso_pct !== '' ? r.taxa_sucesso_pct + '%' : '—'}</td>
+      <td>${pulseHtml(r.pulso)}</td>
+    </tr>`).join('');
+  document.getElementById('airflow-table').innerHTML = trs || '<tr><td class="empty" colspan="5">Sem dados ainda.</td></tr>';
+}
+
+async function renderSnowflake() {
+  const [cat, dq, cd] = await Promise.all([loadCSV('snowflake_catalogo.csv'), loadCSV('snowflake_dq.csv'), loadCSV('snowflake_cd.csv')]);
+  const c = cat[0] || {};
+  const dqFail = dq.filter(r => ['Failed', 'Aborted'].includes(r.resultado)).length;
+  const cdFail = cd.filter(r => !['Success', 'Aligned'].includes(r.status)).length;
+
+  document.getElementById('snowflake-kpis').innerHTML = [
+    kpiTile(c.total_tabelas || '—', 'Tabelas no catálogo'),
+    kpiTile(c.pct_com_descricao !== undefined ? c.pct_com_descricao + '%' : '—', 'Com descrição'),
+    kpiTile(c.pct_com_owner !== undefined ? c.pct_com_owner + '%' : '—', 'Com owner'),
+    kpiTile(dqFail, 'Testes DQ com falha', dqFail > 0 ? 'danger' : 'success'),
+    kpiTile(cdFail, 'Contratos com problema', cdFail > 0 ? 'danger' : 'success'),
+  ].join('');
+
+  const dqRows = dq.filter(r => ['Failed', 'Aborted'].includes(r.resultado)).map(r => `
+    <tr><td class="name">${r.nome_teste}</td><td style="font-size:12px; color:var(--text-dim);">${(r.entidade||'').split('::').slice(-2).join(' · ')}</td><td>${statusDot('failed')}</td></tr>
+  `).join('');
+  document.querySelector('#dq-table tbody').innerHTML = dqRows || '<tr><td class="empty" colspan="3">Nenhuma falha 🎉</td></tr>';
+
+  const cdRows = cd.map(r => `
+    <tr><td class="name">${r.nome_contrato}</td><td>${statusDot(r.status)}</td></tr>
+  `).join('');
+  document.querySelector('#cd-table tbody').innerHTML = cdRows || '<tr><td class="empty" colspan="2">Sem contratos ainda.</td></tr>';
+}
+
+async function renderUpdated() {
+  const meta = await loadCSV('_meta.csv');
+  const ts = meta[0]?.gerado_em;
+  document.getElementById('global-updated').textContent = ts ? `atualizado ${fmtDate(ts)}` : 'sem dados';
+}
+
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('section.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`panel-${btn.dataset.panel}`).classList.add('active');
+  });
+});
+
+(async () => {
+  await Promise.all([renderAirbyte(), renderAirflow(), renderSnowflake(), renderUpdated()]);
+})();
+</script>
+
+</body>
+</html>

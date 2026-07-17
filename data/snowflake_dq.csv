@@ -1,0 +1,3 @@
+nome_teste,entidade,resultado
+not_null_customer_id,table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CPF_CNPJ,Failed
+date_range_create_date,table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CREATE_DATE,Success
