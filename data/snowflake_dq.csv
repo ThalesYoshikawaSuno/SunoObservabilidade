@@ -7,34 +7,34 @@ appRefund_DQ_REF_05_type_in_set,<#E::table::Suno SnowFlake.RAW_SUNO_CORE.SUNO_CO
 appRefund_DQ_REF_06_reasontype_in_enum,<#E::table::Suno SnowFlake.RAW_SUNO_CORE.SUNO_CORE_PROD.APPREFUNDREQUESTS::columns::REASONTYPE>,Success
 date_range_cadastro_data_assinatura_termo,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::CADASTRO_DATA_ASSINATURA_TERMO>,Sem execução
 date_range_cadastro_data_implantacao,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::CADASTRO_DATA_IMPLANTACAO>,Sem execução
-date_range_create_date,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CREATE_DATE>,Sem execução
-date_range_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::CREATE_DATE>,Sem execução
+date_range_create_date,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CREATE_DATE>,Aborted
+date_range_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::CREATE_DATE>,Aborted
 date_range_create_date_consultoria,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::CREATE_DATE_CONSULTORIA>,Sem execução
 date_range_create_date_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::CREATE_DATE_FUNIL>,Sem execução
 date_range_data_da_contratacao_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::DATA_DA_CONTRATACAO_FUNIL>,Sem execução
-date_range_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_INICIO_DE_CONTRATO>,Sem execução
-date_range_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_TERMINO_DE_CONTRATO>,Sem execução
-date_range_data_entrada_agendamentos_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_AGENDAMENTOS_SDR>,Sem execução
-date_range_data_entrada_em_reagendamento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_REAGENDAMENTO>,Sem execução
-date_range_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Sem execução
-date_range_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Sem execução
-date_range_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Sem execução
-date_range_date_entered_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_111842127>,Sem execução
-date_range_date_entered_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875545>,Sem execução
-date_range_date_entered_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875547>,Sem execução
-date_range_date_entered_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875548>,Sem execução
-date_range_date_entered_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875551>,Sem execução
-date_range_date_exited_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_111842127>,Sem execução
-date_range_date_exited_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875545>,Sem execução
-date_range_date_exited_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875547>,Sem execução
-date_range_date_exited_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875548>,Sem execução
-date_range_date_exited_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875551>,Sem execução
+date_range_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_INICIO_DE_CONTRATO>,Aborted
+date_range_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_TERMINO_DE_CONTRATO>,Aborted
+date_range_data_entrada_agendamentos_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_AGENDAMENTOS_SDR>,Aborted
+date_range_data_entrada_em_reagendamento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_REAGENDAMENTO>,Aborted
+date_range_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Aborted
+date_range_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Aborted
+date_range_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Aborted
+date_range_date_entered_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_111842127>,Aborted
+date_range_date_entered_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875545>,Aborted
+date_range_date_entered_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875547>,Aborted
+date_range_date_entered_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875548>,Aborted
+date_range_date_entered_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875551>,Aborted
+date_range_date_exited_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_111842127>,Aborted
+date_range_date_exited_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875545>,Aborted
+date_range_date_exited_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875547>,Aborted
+date_range_date_exited_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875548>,Aborted
+date_range_date_exited_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875551>,Aborted
 date_range_generated_at,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::GENERATED_AT>,Sem execução
-date_range_hs_v2_time_in_current_stage,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::HS_V2_TIME_IN_CURRENT_STAGE>,Sem execução
-date_range_posicao_data,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::POSICAO_DATA>,Sem execução
-date_range_property_closedate,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_CLOSEDATE>,Sem execução
-date_range_reuniao_data_ultima_reuniao,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::REUNIAO_DATA_ULTIMA_REUNIAO>,Sem execução
-date_range_termino_do_atendimento,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::TERMINO_DO_ATENDIMENTO>,Sem execução
+date_range_hs_v2_time_in_current_stage,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::HS_V2_TIME_IN_CURRENT_STAGE>,Aborted
+date_range_posicao_data,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::POSICAO_DATA>,Aborted
+date_range_property_closedate,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_CLOSEDATE>,Aborted
+date_range_reuniao_data_ultima_reuniao,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::REUNIAO_DATA_ULTIMA_REUNIAO>,Aborted
+date_range_termino_do_atendimento,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::TERMINO_DO_ATENDIMENTO>,Aborted
 in_set_assinatura_status,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.FATO_BASE_ASSINANTES::columns::ASSINATURA_STATUS>,Sem execução
 in_set_assinatura_status,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.BASE_FOTO_CHURN_20241231::columns::ASSINATURA_STATUS>,Sem execução
 in_set_assinatura_status,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.FATO_FREQUENCIA_DE_ACESSO_MOVIMENTACOES::columns::ASSINATURA_STATUS>,Sem execução
@@ -173,7 +173,7 @@ length_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_COTISTAS_STATU
 length_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_EMAIL_COTISTAS::columns::CPF_CNPJ>,Sem execução
 length_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.TESTE_TRATAMENTO_OUTLIERS_SNEL::columns::CPF_CNPJ>,Failed
 length_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_SNME11::columns::CPF_CNPJ>,Sem execução
-length_cpf_cnpj,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CPF_CNPJ>,Sem execução
+length_cpf_cnpj,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CPF_CNPJ>,Failed
 length_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_SNFF11::columns::CPF_CNPJ>,Sem execução
 length_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_SNID11::columns::CPF_CNPJ>,Sem execução
 length_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_SNAG::columns::CPF_CNPJ>,Sem execução
@@ -227,13 +227,13 @@ MERCADO_FUNDOS_LIQUIDOS_PROCESSED_AT_notNull,<#E::table::Suno SnowFlake.REFINED_
 MERCADO_FUNDOS_LIQUIDOS_rowCount_min1,<#E::table::Suno SnowFlake.REFINED_ASSET.QUANTUM.MERCADO_FUNDOS_LIQUIDOS>,Success
 non_negative_adiantamentovaloresalugueis,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_FIAGRO_BALANCO_FIAGRO::columns::ADIANTAMENTOVALORESALUGUEIS>,Sem execução
 non_negative_adiantamentovaloresalugueis,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_ASSETS_BALANCO_FIIS::columns::ADIANTAMENTOVALORESALUGUEIS>,Sem execução
-non_negative_amount,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::AMOUNT>,Sem execução
+non_negative_amount,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::AMOUNT>,Success
 non_negative_amount,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::AMOUNT>,Sem execução
 non_negative_amount,<#E::table::Suno SnowFlake.REFINED_ASSET.IVT.API_IVT_WEBHOOK_ALL_TRANSACTIONS::columns::AMOUNT>,Failed
 non_negative_amount_consultoria,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::AMOUNT_CONSULTORIA>,Sem execução
 non_negative_amount_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::AMOUNT_FUNIL>,Sem execução
 non_negative_amount_in_home_currency,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::AMOUNT_IN_HOME_CURRENCY>,Sem execução
-non_negative_amount_in_home_currency,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::AMOUNT_IN_HOME_CURRENCY>,Sem execução
+non_negative_amount_in_home_currency,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::AMOUNT_IN_HOME_CURRENCY>,Success
 non_negative_auditoria_oferta_preco,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.FATO_PEDIDOS_ITENS::columns::AUDITORIA_OFERTA_PRECO>,Sem execução
 non_negative_auditoria_produto_preco,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.FATO_PEDIDOS_ITENS::columns::AUDITORIA_PRODUTO_PRECO>,Sem execução
 non_negative_auditoria_produto_preco_final,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.FATO_PEDIDOS_ITENS::columns::AUDITORIA_PRODUTO_PRECO_FINAL>,Sem execução
@@ -458,7 +458,7 @@ non_negative_price_ultimo_dia_mes,<#E::table::Suno SnowFlake.SERVING_LAYER.STATU
 non_negative_product_price,<#E::table::Suno SnowFlake.SERVING_LAYER.GERAL.VENDAS_MES_ATUAL::columns::product_price>,Sem execução
 non_negative_produto_preco,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.VW_VENDA_POR_HORA::columns::PRODUTO_PRECO>,Sem execução
 non_negative_property_adv__patrimonio_validado,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_ADV__PATRIMONIO_VALIDADO>,Sem execução
-non_negative_property_adv__patrimonio_validado,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_ADV__PATRIMONIO_VALIDADO>,Sem execução
+non_negative_property_adv__patrimonio_validado,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_ADV__PATRIMONIO_VALIDADO>,Success
 non_negative_property_amount,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_AMOUNT>,Sem execução
 non_negative_property_amount_in_home_currency,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_AMOUNT_IN_HOME_CURRENCY>,Sem execução
 non_negative_p_vp_total_grupo,<#E::table::Suno SnowFlake.REFINED_ASSET.QUANTUM.MARKETSHARE_PVP_FUNDOS_ESTRUTURADOS::columns::P_VP_TOTAL_GRUPO>,Success
@@ -667,7 +667,7 @@ non_negative_valor_aplicacao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.CAR
 non_negative_valor_aprovado_reembolso,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH::columns::VALOR_APROVADO_REEMBOLSO>,Sem execução
 non_negative_valor_aquisicao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTOQUE::columns::VALOR_AQUISICAO>,Success
 non_negative_valorativos,<#E::table::Suno SnowFlake.REFINED_ASSET.AUM_RECEITA.FATO_POSICAO_DIARIA::columns::VALORATIVOS>,Failed
-non_negative_valor_bruto,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::VALOR_BRUTO>,Sem execução
+non_negative_valor_bruto,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::VALOR_BRUTO>,Success
 non_negative_valor_bruto,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_BTG_PL_TOTAL::columns::VALOR_BRUTO>,Sem execução
 non_negative_valor_cota,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.XML_HEADER::columns::VALOR_COTA>,Success
 non_negative_valorcota,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_ASSET_STATUS_INVEST_SERIE_HISTORICA_FIA::columns::VALORCOTA>,Sem execução
@@ -697,7 +697,7 @@ non_negative_valor_devolucao,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_C
 non_negative_valor_devolucao,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_E_HOTMART_TEST::columns::VALOR_DEVOLUCAO>,Sem execução
 non_negative_valor_devolucao,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE::columns::VALOR_DEVOLUCAO>,Sem execução
 non_negative_valor_do_contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::VALOR_DO_CONTRATO>,Sem execução
-non_negative_valor_do_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::VALOR_DO_CONTRATO>,Sem execução
+non_negative_valor_do_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::VALOR_DO_CONTRATO>,Success
 non_negative_valoresreceber,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_ASSETS_BALANCO_FIIS::columns::VALORESRECEBER>,Sem execução
 non_negative_valoresreceber,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_FIAGRO_BALANCO_FIAGRO::columns::VALORESRECEBER>,Sem execução
 non_negative_valorexposicao,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_COMPLIANCE_RESULTADOS::columns::VALOREXPOSICAO>,Sem execução
@@ -708,7 +708,7 @@ non_negative_valorfindisp,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.XML_TI
 non_negative_valor_ir,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.CARTEIRA_CPR::columns::VALOR_IR>,Aborted
 non_negative_valor_liquido,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.CARTEIRA_CPR::columns::VALOR_LIQUIDO>,Success
 non_negative_valor_liquido,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_BTG_PL_TOTAL::columns::VALOR_LIQUIDO>,Sem execução
-non_negative_valor_liquido,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::VALOR_LIQUIDO>,Sem execução
+non_negative_valor_liquido,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::VALOR_LIQUIDO>,Success
 non_negative_valor_nominal,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTOQUE::columns::VALOR_NOMINAL>,Success
 non_negative_valor_nominal,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_PU_SNCI_CRI_OLIVEIRA::columns::VALOR_NOMINAL>,Sem execução
 non_negative_valorpagar,<#E::table::Suno SnowFlake.REFINED_ASSET.AUM_RECEITA.FATO_POSICAO_DIARIA::columns::VALORPAGAR>,Success
@@ -745,7 +745,7 @@ non_negative_valor_presente,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTO
 non_negative_valorreceber,<#E::table::Suno SnowFlake.REFINED_ASSET.AUM_RECEITA.FATO_POSICAO_DIARIA::columns::VALORRECEBER>,Success
 non_negative_valor_sellout,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.TESTE_TRATAMENTO_OUTLIERS_SNEL::columns::VALOR_SELLOUT>,Failed
 non_negative_valor_total,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::VALOR_TOTAL>,Sem execução
-non_negative_valor_total,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::VALOR_TOTAL>,Sem execução
+non_negative_valor_total,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::VALOR_TOTAL>,Success
 non_negative_valor_transacao_enriquecido,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS_V5_GIO::columns::VALOR_TRANSACAO_ENRIQUECIDO>,Sem execução
 non_negative_valor_transacao_enriquecido,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS_V4_GIO::columns::VALOR_TRANSACAO_ENRIQUECIDO>,Sem execução
 non_negative_value,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_ASSETS_DIVIDEND_QUOTATION::columns::VALUE>,Sem execução
@@ -756,7 +756,7 @@ non_negative_value,<#E::table::Suno SnowFlake.REFINED_ASSET.IVT.API_IVT_WEBHOOK_
 non_negative_vol_total_registros,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.VW_AGG_COHORT_BY_PLAN_UN_TRUTH::columns::VOL_TOTAL_REGISTROS>,Sem execução
 not_null_actual_days,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_ASSET_COTISTAS_SELLOUT_WEEKLY::columns::ACTUAL_DAYS>,Sem execução
 not_null_actual_days,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_SELLOUT_SNEL_DT::columns::ACTUAL_DAYS>,Sem execução
-not_null_administradora,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::ADMINISTRADORA>,Sem execução
+not_null_administradora,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::ADMINISTRADORA>,Success
 not_null_administrator_id,<#E::table::Suno SnowFlake.REFINED_ASSET.IVT.API_IVT_WEBHOOK_PORTFOLIO_ADMINISTRATOR::columns::ADMINISTRATOR_ID>,Success
 not_null_airbyte_extracted_at,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.VW_RETAIL_MOV_DIARIA_DETALHE::columns::AIRBYTE_EXTRACTED_AT>,Sem execução
 not_null_airbyte_extracted_at,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.FULLBASE_CLIENTESATIVOS_DIARIA::columns::AIRBYTE_EXTRACTED_AT>,Sem execução
@@ -1115,7 +1115,7 @@ not_null_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_EMAILS::columns::CPF_CNPJ>,Sem execução
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_SNEL::columns::CPF_CNPJ>,Sem execução
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_SNCI::columns::CPF_CNPJ>,Sem execução
-not_null_cpf_cnpj,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CPF_CNPJ>,Sem execução
+not_null_cpf_cnpj,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CPF_CNPJ>,Failed
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.TESTE_TRATAMENTO_OUTLIERS_SNEL::columns::CPF_CNPJ>,Success
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_SNFF::columns::CPF_CNPJ>,Sem execução
 not_null_cpf_cnpj,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_SNCI11::columns::CPF_CNPJ>,Sem execução
@@ -1146,10 +1146,10 @@ not_null_created_at,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTA
 not_null_created_at,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.BASE_ASSINANTES_FOTO_DIARIA_V2::columns::CREATED_AT>,Sem execução
 not_null_created_at,<#E::table::Suno SnowFlake.REFINED_ASSET.COTISTAS.DT_COTISTAS_SNEL11::columns::CREATED_AT>,Failed
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_DEALS_VENDAS_ATIVAS::columns::CREATE_DATE>,Sem execução
-not_null_create_date,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CREATE_DATE>,Sem execução
+not_null_create_date,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::CREATE_DATE>,Success
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_DEALS_VENDAS_ENRIQUECIDA::columns::CREATE_DATE>,Sem execução
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::CREATE_DATE>,Sem execução
-not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::CREATE_DATE>,Sem execução
+not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::CREATE_DATE>,Failed
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.TB_DEALS_VENDAS_ENRIQUECIDA_V2::columns::CREATE_DATE>,Sem execução
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.TB_DEALS_VENDAS_ENRIQUECIDA::columns::CREATE_DATE>,Sem execução
 not_null_create_date,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DEALS_VENDAS_ATIVAS::columns::CREATE_DATE>,Sem execução
@@ -1343,12 +1343,12 @@ not_null_datacriacao,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_COMPLIANC
 not_null_data_d1,<#E::table::Suno SnowFlake.REFINED_ASSET.QUANTUM.DIM_CONTROLE_PARES_SUNO::columns::DATA_D1>,Failed
 not_null_data_da_contratacao,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::DATA_DA_CONTRATACAO>,Sem execução
 not_null_data_da_contratacao_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::DATA_DA_CONTRATACAO_FUNIL>,Sem execução
-not_null_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_INICIO_DE_CONTRATO>,Sem execução
+not_null_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_INICIO_DE_CONTRATO>,Failed
 not_null_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATA_DE_INICIO_DE_CONTRATO>,Sem execução
 not_null_data de início de contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_CONSULTORIA_AUC::columns::Data de Início de Contrato>,Sem execução
 not_null_data de início de contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_CONSULTORIA_AUC_LIVE::columns::Data de Início de Contrato>,Sem execução
 not_null_data_desdobramento,<#E::table::Suno SnowFlake.REFINED_ASSET.QUANTUM.DIM_CONTROLE_DESDOBRAMENTO::columns::DATA_DESDOBRAMENTO>,Success
-not_null_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_TERMINO_DE_CONTRATO>,Sem execução
+not_null_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATA_DE_TERMINO_DE_CONTRATO>,Failed
 not_null_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATA_DE_TERMINO_DE_CONTRATO>,Sem execução
 not_null_data_devolucao,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_E_HOTMART::columns::DATA_DEVOLUCAO>,Sem execução
 not_null_data_devolucao,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.VW_VENDAS_SEGMENTED::columns::DATA_DEVOLUCAO>,Sem execução
@@ -1371,11 +1371,11 @@ not_null_data_devolucao,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_P
 not_null_data_devolucao,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_E_HOTMART_TEST::columns::DATA_DEVOLUCAO>,Sem execução
 not_null_data_emissao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.CARTEIRA_CPR::columns::DATA_EMISSAO>,Success
 not_null_data_emissao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTOQUE::columns::DATA_EMISSAO>,Success
-not_null_data_entrada_agendamentos_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_AGENDAMENTOS_SDR>,Sem execução
-not_null_data_entrada_em_reagendamento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_REAGENDAMENTO>,Sem execução
-not_null_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Sem execução
-not_null_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Sem execução
-not_null_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Sem execução
+not_null_data_entrada_agendamentos_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_AGENDAMENTOS_SDR>,Failed
+not_null_data_entrada_em_reagendamento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_REAGENDAMENTO>,Failed
+not_null_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Failed
+not_null_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Failed
+not_null_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Failed
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.VW_INTERNACIONAL_LOGINS::columns::DATA_EVENTO>,Sem execução
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.FATO_MOVIMENTACOES_POR_FREQUENCIA_ACESSO::columns::DATA_EVENTO>,Sem execução
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.SUBSCRIBER_EVENTS_LAST::columns::DATA_EVENTO>,Sem execução
@@ -1555,25 +1555,25 @@ not_null_dateanuncio,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_A
 not_null_datecom,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_ASSETS_DIVIDEND_QUOTATION::columns::DATECOM>,Sem execução
 not_null_datecom,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_ASSET_STATUS_INVEST_DIVIDENDOS::columns::DATECOM>,Sem execução
 not_null_date_created,<#E::table::Suno SnowFlake.REFINED_ASSET.IVT.API_IVT_WEBHOOK_PORTFOLIO_ADMINISTRATOR::columns::DATE_CREATED>,Success
-not_null_date_entered_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_111842127>,Sem execução
+not_null_date_entered_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_111842127>,Failed
 not_null_date_entered_111842127,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_ENTERED_111842127>,Sem execução
 not_null_date_entered_15875545,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_ENTERED_15875545>,Sem execução
-not_null_date_entered_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875545>,Sem execução
-not_null_date_entered_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875547>,Sem execução
+not_null_date_entered_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875545>,Failed
+not_null_date_entered_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875547>,Failed
 not_null_date_entered_15875547,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_ENTERED_15875547>,Sem execução
 not_null_date_entered_15875548,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_ENTERED_15875548>,Sem execução
-not_null_date_entered_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875548>,Sem execução
-not_null_date_entered_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875551>,Sem execução
+not_null_date_entered_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875548>,Failed
+not_null_date_entered_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_ENTERED_15875551>,Failed
 not_null_date_entered_15875551,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_ENTERED_15875551>,Sem execução
 not_null_date_exited_111842127,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_EXITED_111842127>,Sem execução
-not_null_date_exited_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_111842127>,Sem execução
-not_null_date_exited_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875545>,Sem execução
+not_null_date_exited_111842127,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_111842127>,Failed
+not_null_date_exited_15875545,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875545>,Failed
 not_null_date_exited_15875545,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_EXITED_15875545>,Sem execução
 not_null_date_exited_15875547,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_EXITED_15875547>,Sem execução
-not_null_date_exited_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875547>,Sem execução
+not_null_date_exited_15875547,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875547>,Failed
 not_null_date_exited_15875548,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_EXITED_15875548>,Sem execução
-not_null_date_exited_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875548>,Sem execução
-not_null_date_exited_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875551>,Sem execução
+not_null_date_exited_15875548,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875548>,Failed
+not_null_date_exited_15875551,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::DATE_EXITED_15875551>,Failed
 not_null_date_exited_15875551,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::DATE_EXITED_15875551>,Sem execução
 not_null_datepayment,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_ASSET_STATUS_INVEST_DIVIDENDOS::columns::DATEPAYMENT>,Sem execução
 not_null_datepayment,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_ASSETS_DIVIDEND_QUOTATION::columns::DATEPAYMENT>,Sem execução
@@ -1629,7 +1629,7 @@ not_null_dt_snapshot,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKET_SHARE.VW_YT
 not_null_dt_ultimo_snapshot_mes,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKET_SHARE.VW_YT_MARKET_SHARE_MONTHLY::columns::DT_ULTIMO_SNAPSHOT_MES>,Sem execução
 not_null_dt venda,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.TR_MRR_RECEITALEGADO_FINANCEIRO::columns::Dt Venda>,Sem execução
 not_null_e_mail,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::E_MAIL>,Sem execução
-not_null_e_mail,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::E_MAIL>,Sem execução
+not_null_e_mail,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::E_MAIL>,Failed
 not_null_email,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.VW_ACESSO_MENSAL_BUCKETIZADO::columns::EMAIL>,Sem execução
 not_null_email,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS_V4_GIO::columns::EMAIL>,Sem execução
 not_null_email,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS_V2::columns::EMAIL>,Sem execução
@@ -1660,16 +1660,16 @@ not_null_email,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_ST
 not_null_email,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.SUBSCRIBER_EVENTS_DAILY::columns::EMAIL>,Sem execução
 not_null_email,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS::columns::EMAIL>,Sem execução
 not_null_email_closer,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::EMAIL_CLOSER>,Sem execução
-not_null_email_closer,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CLOSER>,Sem execução
+not_null_email_closer,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CLOSER>,Failed
 not_null_email_closer_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::EMAIL_CLOSER_FUNIL>,Sem execução
-not_null_email_consultor,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CONSULTOR>,Sem execução
+not_null_email_consultor,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CONSULTOR>,Failed
 not_null_email_consultor,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::EMAIL_CONSULTOR>,Sem execução
 not_null_email_consultor,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::EMAIL_CONSULTOR>,Sem execução
 not_null_email_consultor_consultoria,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::EMAIL_CONSULTOR_CONSULTORIA>,Sem execução
 not_null_email_consultoria,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::EMAIL_CONSULTORIA>,Sem execução
 not_null_email_consultor_lider,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::EMAIL_CONSULTOR_LIDER>,Sem execução
 not_null_email_consultor_lider,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::EMAIL_CONSULTOR_LIDER>,Sem execução
-not_null_email_consultor_lider,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CONSULTOR_LIDER>,Sem execução
+not_null_email_consultor_lider,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::EMAIL_CONSULTOR_LIDER>,Failed
 not_null_email_consultor_lider_consultoria,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::EMAIL_CONSULTOR_LIDER_CONSULTORIA>,Sem execução
 not_null_email_funil,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA::columns::EMAIL_FUNIL>,Sem execução
 not_null_end_date,<#E::table::Suno SnowFlake.SERVING_LAYER.CRM.VW_BASE_01072025::columns::END_DATE>,Sem execução
@@ -1771,7 +1771,7 @@ not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_PA_BACK_
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_QUANTUM_PL_PRECO_COTA::columns::GENERATED_AT>,Sem execução
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.DT_COTISTAS_SNID::columns::GENERATED_AT>,Sem execução
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_STATUS_INVEST_POSITIONS::columns::GENERATED_AT>,Sem execução
-not_null_generated_at,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::GENERATED_AT>,Sem execução
+not_null_generated_at,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::GENERATED_AT>,Success
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_ASSET_LIQUIDEZ::columns::GENERATED_AT>,Sem execução
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_BTG_PL_TOTAL::columns::GENERATED_AT>,Sem execução
 not_null_generated_at,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_PU_SNCI_CRI_VORTX::columns::GENERATED_AT>,Sem execução
@@ -1797,7 +1797,7 @@ not_null_hojeontem,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_
 not_null_hojeontem,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_CONSULTORIA::columns::HOJEONTEM>,Sem execução
 not_null_hojeontem,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_E_HOTMART::columns::HOJEONTEM>,Sem execução
 not_null_hojeontem,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_CORE_E_HOTMART_TEST_TIMESTAMP::columns::HOJEONTEM>,Sem execução
-not_null_hs_v2_time_in_current_stage,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::HS_V2_TIME_IN_CURRENT_STAGE>,Sem execução
+not_null_hs_v2_time_in_current_stage,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::HS_V2_TIME_IN_CURRENT_STAGE>,Success
 not_null_hs_v2_time_in_current_stage,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::HS_V2_TIME_IN_CURRENT_STAGE>,Sem execução
 not_null_id,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_PU_SNCI_CRI_VORTX::columns::ID>,Sem execução
 not_null_id,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_FUNDOS_INVESTIMENTOS_SERIE_HISTORICA_FIA_PREV_PEERS::columns::ID>,Sem execução
@@ -1821,7 +1821,7 @@ not_null_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_STOR
 not_null_id_do_negocio,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_DEALS_VENDAS_ENRIQUECIDA::columns::ID_DO_NEGOCIO>,Sem execução
 not_null_id_do_negocio,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::ID_DO_NEGOCIO>,Sem execução
 not_null_id_do_negocio,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_DEALS_VENDAS_ATIVAS::columns::ID_DO_NEGOCIO>,Sem execução
-not_null_id do negócio,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::Id do Negócio>,Sem execução
+not_null_id do negócio,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::Id do Negócio>,Success
 not_null_id do negócio,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_CONSULTORIA_AUC_LIVE::columns::Id do Negócio>,Sem execução
 not_null_id_recebivel,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTOQUE::columns::ID_RECEBIVEL>,Success
 not_null_ig_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_USERS::columns::IG_ID>,Sem execução
@@ -2093,7 +2093,7 @@ not_null_plan_sk,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DIM_PLANS
 not_null_plan_sk,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.UNIFIED_DIM_PLANS::columns::PLAN_SK>,Sem execução
 not_null_plan_sk,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.VW_FAT_SUBS_ACTIVITY_UN_TRUTH::columns::PLAN_SK>,Sem execução
 not_null_popup,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DT_LEADS_SUNOCODE_DEV_20260326::columns::POPUP>,Sem execução
-not_null_posicao_data,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::POSICAO_DATA>,Sem execução
+not_null_posicao_data,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL::columns::POSICAO_DATA>,Success
 not_null_posicao_data,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_BTG_PL_TOTAL::columns::POSICAO_DATA>,Sem execução
 not_null_position,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKET_SHARE.VW_YT_TRENDING_FINANCE_BR::columns::POSITION>,Sem execução
 not_null_position_endexecution,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_CONSOLIDATION_EXECUTION_TIME::columns::POSITION_ENDEXECUTION>,Sem execução
@@ -2149,7 +2149,7 @@ not_null_profile_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAG
 not_null_profile_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_MIDIA_POSTS::columns::PROFILE_ID>,Sem execução
 not_null_profile_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_MONTHLY_SUMMARY::columns::PROFILE_ID>,Sem execução
 not_null_profile_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_STORY_FACT::columns::PROFILE_ID>,Sem execução
-not_null_property_closedate,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_CLOSEDATE>,Sem execução
+not_null_property_closedate,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_CLOSEDATE>,Failed
 not_null_property_cpf,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.TB_DEALS_VENDAS_ENRIQUECIDA::columns::PROPERTY_CPF>,Sem execução
 not_null_property_cpf,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_DEALS_VENDAS_ATIVAS::columns::PROPERTY_CPF>,Sem execução
 not_null_property_cpf,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DEALS_VENDAS_ATIVAS::columns::PROPERTY_CPF>,Sem execução
@@ -2159,7 +2159,7 @@ not_null_property_cpf_cnpj,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.
 not_null_property_data_de_inicio_de_contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_DATA_DE_INICIO_DE_CONTRATO>,Sem execução
 not_null_property_data_de_termino_de_contrato,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_DATA_DE_TERMINO_DE_CONTRATO>,Sem execução
 not_null_property_e_mail,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS::columns::PROPERTY_E_MAIL>,Sem execução
-not_null_property_e_mail,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_E_MAIL>,Sem execução
+not_null_property_e_mail,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::PROPERTY_E_MAIL>,Failed
 not_null_property_email,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.BKP_DT_LEADS_SUNOCODE_20260327::columns::PROPERTY_EMAIL>,Sem execução
 not_null_property_email,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DT_LEADS_SUNOCODE::columns::PROPERTY_EMAIL>,Sem execução
 not_null_property_email,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DEALS_VENDAS_ATIVAS::columns::PROPERTY_EMAIL>,Sem execução
@@ -2250,7 +2250,7 @@ not_null_refund_approvaldate,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATUR
 not_null_refund_flag,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH::columns::REFUND_FLAG>,Sem execução
 not_null_refund_status_flag,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH::columns::REFUND_STATUS_FLAG>,Sem execução
 not_null_reuniao_data_ultima_reuniao,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::REUNIAO_DATA_ULTIMA_REUNIAO>,Sem execução
-not_null_reuniao_data_ultima_reuniao,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::REUNIAO_DATA_ULTIMA_REUNIAO>,Sem execução
+not_null_reuniao_data_ultima_reuniao,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::REUNIAO_DATA_ULTIMA_REUNIAO>,Failed
 not_null_rn,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_COMPLIANCE_TABTEM_LOGORDEM::columns::RN>,Sem execução
 not_null_rn,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.VW_ANALISE_RENOVACOES_COM_PAGAMENTO::columns::RN>,Sem execução
 not_null_rn_asc,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_STATUS_CLASSIFICACAO_RENOVACAO::columns::RN_ASC>,Sem execução
@@ -2365,7 +2365,7 @@ not_null_success_ts_same_cycle,<#E::table::Suno SnowFlake.SERVING_LAYER.SUNO_COR
 not_null_success_ts_same_cycle,<#E::table::Suno SnowFlake.SERVING_LAYER.SUNO_CORE.VW_LEGADO_RENEWAL_RETRY_OUTCOMES::columns::SUCCESS_TS_SAME_CYCLE>,Sem execução
 not_null_success_ts_same_cycle,<#E::table::Suno SnowFlake.SERVING_LAYER.SUNO_CORE.VW_CORE_RENEWAL_RETRY_OUTCOMES::columns::SUCCESS_TS_SAME_CYCLE>,Sem execução
 not_null_sunocode_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_AKM::columns::SUNOCODE_ID>,Sem execução
-not_null_termino_do_atendimento,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::TERMINO_DO_ATENDIMENTO>,Sem execução
+not_null_termino_do_atendimento,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS::columns::TERMINO_DO_ATENDIMENTO>,Failed
 not_null_termino_do_atendimento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_DEALS_CADASTRO::columns::TERMINO_DO_ATENDIMENTO>,Sem execução
 not_null_termino_vigencia,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.BASE_FOTO_CHURN_20241231::columns::TERMINO_VIGENCIA>,Sem execução
 not_null_termino_vigencia,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_DEV.FATO_MOVIMENTACAO_ASSINANTES::columns::TERMINO_VIGENCIA>,Sem execução
@@ -2499,10 +2499,10 @@ not_null_week_status,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_SELLOUT_S
 not_null_wp_user_id,<#E::table::Suno SnowFlake.SERVING_LAYER.RESEARCH.VW_VALIDATED_PHONES::columns::WP_USER_ID>,Sem execução
 not_null_wp_user_id,<#E::table::Suno SnowFlake.SERVING_LAYER.RESEARCH.VW_BASE_VALIDADA_SEM_USAR_CHAT::columns::WP_USER_ID>,Sem execução
 orderid_column_values_to_be_not_null_r_6_ag,<#E::table::Suno SnowFlake.TRUSTED.SUNO_CORE.APPCUSTOMERSUBSCRIPTIONS_JOIN_ORDERID::columns::ORDERID>,Sem execução
-row_count_positive,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS>,Sem execução
+row_count_positive,<#E::table::Suno SnowFlake.TRUSTED.CONSULTORIA_HUBSPOT.HUBSPOT_DEALS>,Success
 row_count_positive,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA>,Sem execução
-row_count_positive,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL>,Sem execução
-row_count_positive,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY>,Sem execução
+row_count_positive,<#E::table::Suno SnowFlake.REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL>,Success
+row_count_positive,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY>,Success
 unique_id,<#E::table::Suno SnowFlake.SERVING_LAYER.ASSET.VW_PU_SNCI_CRI_VORTX::columns::ID>,Sem execução
 unique_id,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_INSTAGRAM_MIDIA_POSTS::columns::ID>,Sem execução
 unique_id,<#E::table::Suno SnowFlake.SERVING_LAYER.STATUS_INVEST.VW_BASE_CONSOLIDATION_EXECUTION_TIME::columns::ID>,Sem execução

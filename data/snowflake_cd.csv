@@ -28,8 +28,8 @@ FATO_MERCADO_FUNDOS_LIQUIDOS_contract,,Running
 FATO_MERCADO_INDICES_contract,,Running
 FATO_POSICAO_DIARIA_contract,,Running
 FATO_POSICAO_SINGULARE_contract,,Running
-FUNIL_ADVISORY_contract,,Sem execução
-HUBSPOT_DEALS_contract,,Sem execução
+FUNIL_ADVISORY_contract,,Running
+HUBSPOT_DEALS_contract,,Running
 MARKETSHARE_LIQUIDEZ_FUNDOS_ESTRUTURADOS_contract,,Running
 MARKETSHARE_PVP_FUNDOS_ESTRUTURADOS_contract,,Running
 MERCADO_FUNDOS_ESTRUTURADOS_contract,,Running
@@ -46,7 +46,7 @@ TESTE_DT_COTISTAS_SNAG11_2024_contract,,Running
 TESTE_DT_COTISTAS_SNAG11_V2_contract,,Running
 TESTE_TRATAMENTO_OUTLIERS_SNEL_contract,,Running
 VOLATILIDADE_MERCADO_contract,,Running
-VW_BTG_PL_TOTAL_contract,,Sem execução
-VW_FUNIL_CONSULTORIA_contract,,Sem execução
+VW_BTG_PL_TOTAL_contract,,Running
+VW_FUNIL_CONSULTORIA_contract,,Running
 XML_HEADER_contract,,Running
 XML_TITPRIVADO_contract,,Running
