@@ -1373,9 +1373,9 @@ not_null_data_emissao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.CARTEIRA_C
 not_null_data_emissao,<#E::table::Suno SnowFlake.REFINED_ASSET.FIDCPR.ESTOQUE::columns::DATA_EMISSAO>,Success
 not_null_data_entrada_agendamentos_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_AGENDAMENTOS_SDR>,Failed
 not_null_data_entrada_em_reagendamento,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_REAGENDAMENTO>,Failed
-not_null_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Failed
-not_null_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Failed
-not_null_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Failed
+not_null_data_entrada_em_tratativa,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_EM_TRATATIVA>,Aborted
+not_null_data_entrada_interesse_futuro_sdr,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_INTERESSE_FUTURO_SDR>,Aborted
+not_null_data_entrada_perdido,<#E::table::Suno SnowFlake.SERVING_LAYER.CONSULTORIA.FUNIL_ADVISORY::columns::DATA_ENTRADA_PERDIDO>,Aborted
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.VW_INTERNACIONAL_LOGINS::columns::DATA_EVENTO>,Sem execução
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_SUNO_CORE.SUNO_CORE_PROD.FATO_MOVIMENTACOES_POR_FREQUENCIA_ACESSO::columns::DATA_EVENTO>,Sem execução
 not_null_data_evento,<#E::table::Suno SnowFlake.REFINED_RESEARCH.SUBSCRIBER_EVENTS.SUBSCRIBER_EVENTS_LAST::columns::DATA_EVENTO>,Sem execução
