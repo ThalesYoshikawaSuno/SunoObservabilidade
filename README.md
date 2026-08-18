@@ -37,7 +37,23 @@ qualquer momento pela aba Actions (`workflow_dispatch`).
 
 - `airbyte.csv` — todas as conexões, status, taxa de sucesso, pulso das últimas execuções
 - `airflow.csv` — todas as DAGs, mesma estrutura
-- `snowflake_catalogo.csv` — cobertura de descrição/owner
-- `snowflake_dq.csv` — todos os testes de qualidade e resultado
+- `snowflake_catalogo.csv` — agregado geral: total de tabelas, % descrição, % owner, total de dashboards
+- `snowflake_dq.csv` — todos os testes de qualidade e resultado (flat, todas as BUs)
 - `snowflake_cd.csv` — todos os contratos de dados e status
+- `snowflake_bu.csv` — agregado por BU (Asset/Consultoria/Assinaturas/Marketing/Research/A revisar): tabelas, testes DQ (total/falha/sucesso), tabelas sem nenhum teste, dashboards aproximados
+- `snowflake_tabelas.csv` — 1 linha por tabela: BU, database, schema, contagem de testes, link direto pro OM e pro Snowsight (`sourceUrl` nativo do OM) — usado pelo drill-down do dashboard
 - `_meta.csv` — data/hora da última coleta
+
+### Classificação por BU
+
+`fetch_dashboard_data.py` usa as mesmas regras (`BU_RULES`) do script
+`gerar_relatorio_bu.py` — palavras-chave em database/schema/tabela, case
+insensitive, primeira regra que bater ganha. Se as regras mudarem lá,
+replicar aqui manualmente (não há import compartilhado entre os dois
+scripts, rodam em ambientes diferentes). Tabela que não bate em nenhuma
+regra cai em "A REVISAR".
+
+A contagem de "dashboards por BU" é **aproximada** — classifica pelo
+nome/descrição do dashboard com a mesma regra de BU, já que o OM ainda não
+tem domain/BU atribuído a cada dashboard individualmente. Tratar como
+estimativa, não como corte oficial.

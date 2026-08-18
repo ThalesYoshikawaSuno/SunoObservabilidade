@@ -1,0 +1,19 @@
+nome,servico,tipo,camada,pausado,cron
+Metadata Agent,Suno SnowFlake,metadata,—,Sim,
+Metadata — Bronze,Suno SnowFlake,metadata,Bronze,Nao,0 6 * * *
+Metadata — Ouro,Suno SnowFlake,metadata,Ouro,Nao,30 6 * * *
+Metadata — Outros,Suno SnowFlake,metadata,Outros,Sim,0 6 * * 0
+Metadata — Platina,Suno SnowFlake,metadata,Platina,Nao,45 6 * * *
+Metadata — Prata,Suno SnowFlake,metadata,Prata,Sim,15 6 * * *
+Lineage — Bronze,Suno SnowFlake,lineage,Bronze,Sim,0 12 * * *
+Lineage — Ouro,Suno SnowFlake,lineage,Ouro,Sim,30 12 * * *
+Lineage — Outros,Suno SnowFlake,lineage,Outros,Sim,0 12 * * 0
+Lineage — Platina,Suno SnowFlake,lineage,Platina,Sim,45 12 * * *
+Lineage — Prata,Suno SnowFlake,lineage,Prata,Sim,15 12 * * *
+Profiler Agent,Suno SnowFlake,profiler,—,Sim,0 16 * * 5
+Suno SnowFlake Raw_autoClassification,Suno SnowFlake,autoClassification,—,Sim,0 8 * * 5
+Suno SnowFlake Refined_autoClassification,Suno SnowFlake,autoClassification,—,Sim,
+Suno SnowFlake Trusted e Outros_autoClassification,Suno SnowFlake,autoClassification,—,Sim,0 6 * * 5
+Usage Agent,Suno SnowFlake,usage,—,Sim,0 14 * * *
+Metadata Agent,Suno Airflow,metadata,—,Nao,0 12 * * *
+Suno_AirByte_metadata_hHAF0BY6,Suno AirByte,metadata,—,Nao,0 12 * * *

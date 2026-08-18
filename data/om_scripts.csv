@@ -1,0 +1,13 @@
+nome,agendamento,descricao
+generate_descriptions.py,manual,Gera resumoTabela/origemDados via parsing de DDL/comentario.
+generate_pipeline_descriptions.py,manual,Mesma logica para PIPELINE entities (Airbyte/Airflow).
+create_all_test_pipelines.py,manual,Cria pipelines de teste de DQ para tabelas.
+deploy_trigger_test_pipelines.py,manual,Deploy + trigger de pipelines de teste de DQ.
+create_all_contracts.py,manual,Cria Data Contracts a partir de testCases existentes.
+gerar_dq_cd_mapeamento.py,manual,Geracao de DQ+CD para mapeamento especifico via Excel.
+gerar_relatorio_bu.py,manual,Classificacao por BU + relatorio de cobertura DQ/CD em Excel.
+airflow_lineage.py,0 13 * * *,"Extrai lineage das DAGs via GitLab, insere no OM. Unico com cron real."
+airflow_external_lineage.py,manual (recomendado: semanal),"Detecta fontes externas (S3, Sheets, APIs) nas DAGs, cria servico consolidado + lineage direcional."
+airbyte_report.py,manual,"Relatorio Excel de conexoes Airbyte, bypassa o conector nativo (bug conhecido)."
+dag_report.py,manual (auditoria ocasional),Relatorio de DAGs com deteccao de escrita Snowflake via regex no codigo-fonte.
+buscar_hubspot_dags.py,manual (arquivado),Utilitario pontual de investigacao — candidato a arquivar.

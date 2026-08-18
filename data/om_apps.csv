@@ -1,0 +1,9 @@
+nome,enabled,cron
+AutoPilot,Sim,
+Cache Warmup,Não,0 0 * * *
+Data Contract Validation,Sim,0 0 * * *
+Data Insights,Sim,0 3 * * *
+Data Retention,Sim,0 0 * * 0
+MCP Server,Sim,
+RDF Knowledge Graph Indexing,Sim,0 0 * * 6
+Search Indexing,Sim,

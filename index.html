@@ -9,31 +9,45 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   :root {
-    --bg: #0F1419; --surface: #171E26; --surface-2: #1E2731; --border: #2A333D;
-    --text: #E8ECEF; --text-dim: #8B95A1; --text-faint: #5C6672;
-    --success: #4FBA8A; --warning: #E8A33D; --danger: #E0615D; --skip: #6B7684; --brand: #6C8EEF;
+    /* Paleta oficial Suno — https://zeroheight.com/4344c4708/p/910ddb-paleta */
+    --bg: #FAFAFA; --surface: #FFFFFF; --surface-2: #F1F1F1; --border: #E2E2E2;
+    --text: #262626; --text-dim: #6E6E6E; --text-faint: #A0A0A0;
+    --success: #00A000; --warning: #FFBD12; --danger: #FD0000; --skip: #A0A0A0; --brand: #D42126;
+    --warning-text: #8A6200;
     --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
-  header { position: sticky; top: 0; z-index: 10; background: rgba(15,20,25,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 0 24px; }
-  .header-inner { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .brand { font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 10px; }
-  .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(79,186,138,0.15); }
-  .updated { font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+  .app-shell { display: flex; min-height: 100vh; }
 
-  nav.tabs { max-width: 1180px; margin: 0 auto; display: flex; gap: 4px; padding: 0 24px; }
-  nav.tabs button { font-family: var(--sans); font-weight: 600; font-size: 13.5px; color: var(--text-dim); background: none; border: none; padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
-  nav.tabs button:hover { color: var(--text); }
-  nav.tabs button.active { color: var(--text); border-color: var(--brand); }
-  nav.tabs button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  nav.sidebar { width: 208px; flex: 0 0 208px; background: var(--surface); border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px 12px; }
+  .brand { font-family: var(--mono); font-weight: 700; font-size: 13.5px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 9px; padding: 6px 10px 22px; }
+  .brand.suno-symbol { padding-left: 12px; }
+  .brand.suno-symbol img { height: 28px; width: auto; display: block; }
+  nav.sidebar button { width: 100%; display: flex; align-items: center; gap: 10px; font-family: var(--sans); font-weight: 600; font-size: 13.5px; color: var(--text-dim); background: none; border: none; border-left: 2px solid transparent; padding: 10px 10px; cursor: pointer; border-radius: 0 8px 8px 0; transition: color .15s, background .15s, border-color .15s; text-align: left; margin-bottom: 2px; }
+  nav.sidebar button svg { flex-shrink: 0; opacity: .8; }
+  nav.sidebar button:hover { color: var(--text); background: var(--surface-2); }
+  nav.sidebar button.active { color: var(--text); border-color: var(--brand); background: var(--surface-2); }
+  nav.sidebar button.active svg { opacity: 1; color: var(--brand); }
+  nav.sidebar button:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+  .updated { font-family: var(--mono); font-size: 11px; color: var(--text-faint); padding: 16px 10px 4px; border-top: 1px solid var(--border); margin-top: 12px; }
 
+  .content-area { flex: 1 1 auto; min-width: 0; }
   main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
   section.panel { display: none; }
   section.panel.active { display: block; animation: fadein .25s ease; }
   @keyframes fadein { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: none; } }
+
+  @media (max-width: 720px) {
+    .app-shell { flex-direction: column; }
+    nav.sidebar { width: 100%; flex: 0 0 auto; height: auto; position: static; display: flex; flex-wrap: wrap; align-items: center; }
+    nav.sidebar .brand { width: 100%; padding-bottom: 10px; }
+    nav.sidebar button { width: auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 8px 8px 0 0; }
+    nav.sidebar button.active { border-color: var(--brand); }
+    .updated { display: none; }
+  }
 
   h1.panel-title { font-family: var(--mono); font-size: 20px; font-weight: 600; margin: 0 0 4px; }
   p.panel-sub { color: var(--text-dim); font-size: 13.5px; margin: 0 0 28px; }
@@ -43,7 +57,7 @@
   .kpi .value { font-family: var(--mono); font-size: 28px; font-weight: 700; line-height: 1.1; }
   .kpi .label { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
   .kpi.success .value { color: var(--success); }
-  .kpi.warning .value { color: var(--warning); }
+  .kpi.warning .value { color: var(--warning-text); }
   .kpi.danger .value { color: var(--danger); }
 
   table.data { width: 100%; border-collapse: collapse; font-size: 13.5px; }
@@ -76,22 +90,63 @@
   .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
   .table-scroll table.data { min-width: 480px; }
   footer { text-align: center; color: var(--text-faint); font-size: 12px; padding: 24px; font-family: var(--mono); }
+
+  .bu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .bu-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; text-align: left; font-family: var(--sans); transition: border-color .15s, transform .1s; }
+  .bu-card:hover { border-color: var(--brand); transform: translateY(-1px); }
+  .bu-card.selected { border-color: var(--brand); background: var(--surface-2); }
+  .bu-card .bu-name { font-family: var(--mono); font-weight: 700; font-size: 13.5px; letter-spacing: 0.02em; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .bu-card .bu-name .paren { color: var(--brand); }
+  .bu-card .bu-name .sev { width: 8px; height: 8px; border-radius: 50%; }
+  .bu-card .bu-metric { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-dim); padding: 3px 0; }
+  .bu-card .bu-metric b { font-family: var(--mono); color: var(--text); font-weight: 600; }
+  .bu-card .bu-metric.danger b { color: var(--danger); }
+  .bu-card .bu-metric.warning b { color: var(--warning-text); }
+
+  .drilldown { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  .drilldown-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .drilldown-header h3 { font-family: var(--mono); font-size: 15px; margin: 0; }
+  .drilldown-header button { background: var(--surface-2); border: 1px solid var(--border); color: var(--text-dim); border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: var(--sans); }
+  .drilldown-header button:hover { color: var(--text); }
+  .link-icons { display: flex; gap: 8px; }
+  .link-icons a { font-family: var(--mono); font-size: 11px; color: var(--brand); text-decoration: none; padding: 2px 8px; border: 1px solid var(--border); border-radius: 5px; }
+  .link-icons a:hover { text-decoration: underline; border-color: var(--brand); }
+  .link-icons a.disabled { color: var(--text-faint); pointer-events: none; border-color: var(--border); }
+  .test-mini { font-family: var(--mono); font-size: 12px; }
+  .test-mini .ok { color: var(--success); }
+  .test-mini .fail { color: var(--danger); }
+  .test-mini .none { color: var(--text-faint); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="brand"><span class="dot"></span>dashboard semanal · dados suno</div>
-    <div class="updated" id="global-updated">carregando…</div>
-  </div>
-  <nav class="tabs">
-    <button data-panel="airbyte" class="active">Airbyte</button>
-    <button data-panel="airflow">Airflow</button>
-    <button data-panel="snowflake">Snowflake</button>
-  </nav>
-</header>
+<div class="app-shell">
+<nav class="sidebar">
+  <div class="brand suno-symbol"><img src="suno_wordmark.png" alt="Suno"></div>
+  <button data-panel="airbyte" class="active">
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#615EFF"><path d="M8.308 2.914C10.876.027 15.128-.819 18.624.848c4.644 2.21 6.339 7.846 3.809 12.194l-5.687 9.77c-.319.547-.842.944-1.455 1.107-.613.163-1.267.079-1.818-.236l6.887-11.832c1.835-3.155.608-7.243-2.758-8.854-2.528-1.208-5.613-.604-7.482 1.473-1.031 1.139-1.608 2.613-1.628 4.145-.018 1.532.524 3.019 1.524 4.185.179.21.372.406.579.588l-4.021 6.919c-.157.273-.365.51-.617.699-.249.189-.534.329-.838.411-.303.081-.621.1-.93.061-.313-.041-.614-.143-.885-.298l4.364-7.513C7.041 12.77 6.59 11.763 6.34 10.7l-2.675 4.612c-.317.545-.842.944-1.453 1.107-.615.164-1.269.079-1.818-.237L7.31 4.284c.29-.487.622-.948.998-1.37Zm7.983 3.784c1.666.956 2.242 3.081 1.277 4.734L10.936 22.81c-.317.547-.84.945-1.455 1.109-.612.162-1.268.079-1.816-.237l6.159-10.596c-.495-.1-.96-.308-1.365-.61-.405-.3-.743-.682-.981-1.122-.242-.441-.385-.928-.418-1.428-.033-.501.045-1.002.224-1.47.18-.468.462-.893.824-1.242.362-.35.795-.618 1.273-.784.474-.168.982-.23 1.485-.183.502.046.989.2 1.425.451Zm-2.412 2.139c-.114.087-.21.196-.282.32-.106.186-.158.398-.144.613.014.215.092.42.224.592.13.167.31.297.515.367.207.068.427.077.636.02.209-.056.396-.172.54-.334.143-.161.234-.36.263-.574.027-.213-.008-.43-.105-.622-.097-.195-.246-.354-.433-.46-.126-.072-.263-.118-.406-.136-.143-.02-.286-.01-.424.026-.14.038-.271.101-.384.188Z"/></svg>
+    Airbyte
+  </button>
+  <button data-panel="airflow">
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#017CEE"><path d="M17.195 16.822l4.002-4.102C23.55 10.308 23.934 5.154 24 .43a.396.396 0 0 0-.246-.373.392.392 0 0 0-.437.09l-6.495 6.658-4.102-4.003C10.309.45 5.154.066.43 0H.423a.397.397 0 0 0-.277.683l6.658 6.494-4.003 4.103C.45 13.692.065 18.846 0 23.57a.398.398 0 0 0 .683.282l6.494-6.657 3.934 3.837.17.165c2.41 2.353 7.565 2.737 12.288 2.803h.006a.397.397 0 0 0 .277-.683l-6.657-6.495zm-.409-9.476c.04.115.05.24.031.344-.17.96-1.593 2.538-4.304 3.87a.597.597 0 0 0-.08-.079c1.432-3.155 1.828-5.61 1.175-7.322l3.058 2.984.12.203zm-.131 9.44a.73.73 0 0 1-.347.031c-.96-.171-2.537-1.594-3.87-4.307a.656.656 0 0 0 .08-.078l-.001.001c3.155 1.432 5.61 1.83 7.324 1.174l-2.969 3.043M23.568.392a.05.05 0 0 1 .052-.011c.018.006.03.024.029.043-.065 4.655-.437 9.726-2.703 12.05-1.53 1.565-4.326 1.419-8.283-.377.006-.037.021-.07.02-.108 0-.044-.017-.082-.026-.123 2.83-1.39 4.315-3.037 4.506-4.115.057-.322-.009-.542-.102-.688l6.507-6.67V.392zM.393.43A.045.045 0 0 1 .382.38C.39.36.403.343.425.35c4.655.065 9.727.438 12.05 2.703l.002.002c1.56 1.527 1.415 4.323-.379 8.28-.033-.005-.062-.02-.097-.02h-.008c-.045.001-.084.019-.126.027-1.39-2.83-3.037-4.314-4.115-4.506-.323-.057-.542.01-.688.103L.393.43zm11.94 11.563a.331.331 0 0 1-.327.335H12a.332.332 0 0 1-.004-.661c.172.016.333.144.335.326h.002zm-5.12 4.661a.722.722 0 0 1-.03-.345c.17-.96 1.595-2.54 4.309-3.873.013.016.019.035.033.05.013.012.03.017.044.028-1.434 3.158-1.83 5.613-1.177 7.326l-3.041-2.967m-.006-9.659a.735.735 0 0 1 .345-.031c.961.17 2.54 1.594 3.871 4.306a.597.597 0 0 0-.079.08c-2.167-.983-4.007-1.484-5.498-1.484-.68 0-1.289.103-1.825.308L7.128 7.35M.43 23.607c-.018.018-.038.015-.052.01-.019-.007-.028-.021-.028-.043.065-4.654.437-9.725 2.703-12.049 1.527-1.565 4.325-1.419 8.286.378-.006.035-.02.067-.02.104 0 .043.018.083.026.124-2.831 1.391-4.317 3.04-4.51 4.117-.057.322.01.542.103.688L.43 23.607zm23.144.042c-4.655-.065-9.726-.437-12.05-2.703l-.005-.006c-1.56-1.526-1.412-4.322.383-8.279.033.005.064.02.098.02h.009c.043 0 .08-.018.122-.027 1.39 2.832 3.036 4.317 4.115 4.51.083.014.16.021.23.021a.776.776 0 0 0 .45-.133l6.68 6.516c.02.02.016.04.01.052a.042.042 0 0 1-.042.029z"/></svg>
+    Airflow
+  </button>
+  <button data-panel="snowflake">
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#29B5E8"><path d="M24 3.459c0 .646-.418 1.18-1.141 1.18-.723 0-1.142-.534-1.142-1.18 0-.647.419-1.18 1.142-1.18.723 0 1.141.533 1.141 1.18zm-.228 0c0-.533-.38-.951-.913-.951s-.913.38-.913.95c0 .533.38.952.913.952.57 0 .913-.419.913-.951zm-1.37-.533h.495c.266 0 .456.152.456.38 0 .153-.076.229-.19.305l.19.266v.038h-.266l-.19-.266h-.229v.266h-.266zm.495.228h-.229v.267h.229c.114 0 .152-.038.152-.114.038-.077-.038-.153-.152-.153zM7.602 12.4c.038-.151.076-.304.076-.456 0-.114-.038-.228-.038-.342-.114-.343-.304-.647-.646-.838l-4.87-2.777c-.685-.38-1.56-.152-1.94.533-.381.685-.153 1.56.532 1.94l2.701 1.56-2.701 1.56c-.685.38-.913 1.256-.533 1.94.38.685 1.256.914 1.94.533l4.832-2.777c.343-.267.571-.533.647-.876zm1.332 2.626c-.266-.038-.57.038-.837.19l-4.832 2.777c-.685.38-.913 1.256-.532 1.94.38.686 1.255.914 1.94.533l2.701-1.56v3.12c0 .8.647 1.408 1.446 1.408.799 0 1.407-.647 1.407-1.408v-5.592c0-.761-.57-1.37-1.293-1.408zm4.946-6.088c.266.038.57-.038.837-.19l4.832-2.777c.685-.38.913-1.256.532-1.94-.38-.686-1.255-.914-1.94-.533l-2.701 1.56V1.975c0-.799-.647-1.408-1.446-1.408-.799 0-1.446.609-1.446 1.408V7.53c0 .76.609 1.37 1.332 1.407zM3.265 5.97l4.832 2.777c.266.152.533.19.837.19.723-.038 1.331-.684 1.331-1.407V1.975c0-.799-.646-1.408-1.407-1.408-.799 0-1.446.647-1.446 1.408v3.12l-2.701-1.56c-.685-.38-1.56-.152-1.94.533-.419.646-.19 1.521.494 1.902zm9.093 6.011a.412.412 0 00-.114-.266l-.57-.571a.346.346 0 00-.267-.114.412.412 0 00-.266.114l-.571.57a.411.411 0 00-.114.267c0 .076.038.19.114.267l.57.57a.345.345 0 00.267.114c.076 0 .19-.038.266-.114l.571-.57a.412.412 0 00.114-.267zm1.598.533L11.94 14.53c-.039.038-.153.114-.229.114h-.608a.411.411 0 01-.267-.114L8.82 12.514a.408.408 0 01-.076-.229v-.608c0-.076.038-.19.114-.267l2.016-2.016a.41.41 0 01.267-.114h.608a.41.41 0 01.267.114l2.016 2.016a.347.347 0 01.114.267v.608c-.076.077-.114.19-.19.229zm5.593 5.44l-4.832-2.777c-.266-.152-.57-.19-.837-.152-.723.038-1.332.684-1.332 1.408v5.554c0 .8.647 1.408 1.408 1.408.799 0 1.446-.647 1.446-1.408v-3.12l2.7 1.56c.686.38 1.561.152 1.941-.533.419-.646.19-1.521-.494-1.94zm2.549-7.533l-2.701 1.56 2.7 1.56c.686.38.914 1.256.533 1.94-.38.685-1.255.913-1.94.533l-4.832-2.778a1.644 1.644 0 01-.647-.798c-.037-.153-.076-.305-.076-.457 0-.114.039-.228.039-.342.114-.343.342-.647.646-.837l4.832-2.778c.685-.38 1.56-.152 1.94.533.457.609.19 1.484-.494 1.864"/></svg>
+    Snowflake
+  </button>
+  <button data-panel="om">
+    <svg width="16" height="16" viewBox="0 0 53 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.000834935 13L0 50.6583C0.113913 58.0366 11.9352 64 26.5 64C41.0648 64 52.8852 58.0366 52.9991 50.6583L53 13C52.8861 20.3784 41.0648 26.3418 26.5 26.3418C11.9352 26.3418 0.114748 20.3784 0.000834935 13Z" fill="#8D6AF1"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M26.5 27C41.1355 27 53 20.9558 53 13.4999C53 6.04415 41.1355 0 26.5 0C11.8645 0 0 6.04415 0 13.4999C0 20.9558 11.8645 27 26.5 27ZM26.6059 20.412C33.9237 20.412 39.856 17.3899 39.856 13.6619C39.856 9.93407 33.9237 6.91199 26.6059 6.91199C19.2882 6.91199 13.356 9.93407 13.356 13.6619C13.356 17.3899 19.2882 20.412 26.6059 20.412Z" fill="#35198E"/>
+      <path d="M18.1319 45.7052V54.3835C18.1319 55.1513 17.3025 55.6326 16.6358 55.2517L9.67578 51.2745C9.36418 51.0965 9.17188 50.7652 9.17188 50.4063V30.1506C9.17188 29.3709 10.0246 28.8912 10.6911 29.2959L26.0457 38.6218C26.3614 38.8135 26.7571 38.8156 27.0748 38.6273L42.862 29.2684C43.5286 28.8732 44.372 29.3537 44.372 30.1286V50.8082C44.372 51.1802 44.1655 51.5215 43.836 51.6941L36.876 55.3398C36.2101 55.6885 35.4119 55.2056 35.4119 54.4539V45.6621C35.4119 44.896 34.5858 44.4144 33.9192 44.7919L27.0638 48.6739C26.7514 48.8508 26.3682 48.8467 26.0597 48.6632L19.6432 44.8458C18.9767 44.4492 18.1319 44.9295 18.1319 45.7052Z" fill="#FFFFFF"/>
+    </svg>
+    OpenMetadata
+  </button>
+  <div class="updated" id="global-updated">carregando…</div>
+</nav>
 
+<div class="content-area">
 <main>
   <section class="panel active" id="panel-airbyte">
     <h1 class="panel-title">Airbyte</h1>
@@ -121,18 +176,67 @@
     <h1 class="panel-title">Snowflake</h1>
     <p class="panel-sub">Cobertura do catálogo, qualidade de dados (DQ) e contratos de dados (CD).</p>
     <div class="kpi-row" id="snowflake-kpis"></div>
-    <div class="subgrid">
+
+    <h2 class="sub-title">Por BU — clique para ver as tabelas</h2>
+    <div class="bu-grid" id="bu-grid"></div>
+
+    <div class="drilldown" id="bu-drilldown" style="display:none;">
+      <div class="drilldown-header">
+        <h3 id="bu-drilldown-title"></h3>
+        <button id="bu-drilldown-close">fechar ✕</button>
+      </div>
+      <div class="table-scroll">
+        <table class="data" id="bu-tables-table">
+          <thead><tr><th>Tabela</th><th>Schema</th><th>Descrição</th><th>Owner</th><th>Testes DQ</th><th>Links</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h2 class="sub-title" style="margin-top:22px;">Falhas de qualidade de dados (DQ) desta BU</h2>
+      <div class="table-scroll"><table class="data" id="dq-table"><thead><tr><th>Teste</th><th>Entidade</th><th>Resultado</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <h2 class="sub-title">Contratos de dados (CD)</h2>
+    <div class="table-scroll"><table class="data" id="cd-table"><thead><tr><th>Contrato</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="panel" id="panel-om">
+    <h1 class="panel-title">OM (OpenMetadata)</h1>
+    <p class="panel-sub">Agentes de ingestão, Apps nativas, Glossário e scripts do servidor.</p>
+    <div class="kpi-row" id="om-kpis"></div>
+
+    <h2 class="sub-title">Agentes de ingestão — Snowflake, Airflow e Airbyte</h2>
+    <div class="table-scroll">
+      <table class="data" id="om-agentes-table">
+        <thead><tr><th>Pipeline</th><th>Serviço</th><th>Tipo</th><th>Camada</th><th>Status</th><th>Agendamento</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="subgrid" style="margin-top:28px;">
       <div>
-        <h2 class="sub-title">Falhas de qualidade de dados (DQ)</h2>
-        <div class="table-scroll"><table class="data" id="dq-table"><thead><tr><th>Teste</th><th>Entidade</th><th>Resultado</th></tr></thead><tbody></tbody></table></div>
+        <h2 class="sub-title">Apps nativas do OM</h2>
+        <div class="table-scroll">
+          <table class="data" id="om-apps-table">
+            <thead><tr><th>App</th><th>Estado</th><th>Agendamento</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
       <div>
-        <h2 class="sub-title">Contratos de dados (CD)</h2>
-        <div class="table-scroll"><table class="data" id="cd-table"><thead><tr><th>Contrato</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+        <h2 class="sub-title">Scripts do servidor (manuais)</h2>
+        <div class="table-scroll">
+          <table class="data" id="om-scripts-table">
+            <thead><tr><th>Script</th><th>Agendamento</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
 </main>
+</div>
+</div>
 
 <footer>dados atualizados semanalmente via GitHub Actions · fetch_dashboard_data.py</footer>
 
@@ -158,12 +262,24 @@ function kpiTile(value, label, tone) {
   return `<div class="kpi ${tone || ''}"><div class="value">${value}</div><div class="label">${label}</div></div>`;
 }
 
-function loadCSV(name) {
+function loadCSV(name, attempt = 1) {
   return new Promise((resolve) => {
-    Papa.parse(`./data/${name}?t=${Date.now()}`, {
+    Papa.parse(`./data/${name}?t=${Date.now()}_${attempt}`, {
       download: true, header: true, skipEmptyLines: true,
-      complete: (res) => resolve(res.data),
-      error: () => resolve([]),
+      complete: (res) => {
+        // download parcial/truncado costuma sobrar como erro silencioso do Papa
+        // (res.data vazio ou res.errors com "TooFewFields" em massa perto do fim);
+        // tenta de novo antes de desistir.
+        if ((!res.data || !res.data.length) && attempt < 3) {
+          resolve(loadCSV(name, attempt + 1));
+        } else {
+          resolve(res.data || []);
+        }
+      },
+      error: () => {
+        if (attempt < 3) resolve(loadCSV(name, attempt + 1));
+        else resolve([]);
+      },
     });
   });
 }
@@ -220,9 +336,92 @@ async function renderAirflow() {
   document.getElementById('airflow-table').innerHTML = trs || '<tr><td class="empty" colspan="5">Sem dados ainda.</td></tr>';
 }
 
+const BU_LABEL = {
+  ASSET: 'Asset', CONSULTORIA: 'Consultoria', ASSINATURAS: 'Assinaturas',
+  MARKETING: 'Marketing', RESEARCH: 'Research', 'A REVISAR': 'A revisar',
+};
+
+let SNOWFLAKE_TABELAS = [];
+let SNOWFLAKE_DQ = [];
+const TABLE_LINK_RE = /<#E::table::([^:]+(?:\.[^:]+)*?)(?:::|>)/;
+
+function buSeverity(bu) {
+  if (bu.testes_falha > 0) return 'danger';
+  if (Number(bu.total_tabelas) > 0 && Number(bu.tabelas_sem_teste) === Number(bu.total_tabelas)) return 'warning';
+  return 'success';
+}
+
+function renderBuGrid(buRows) {
+  const sevColor = { danger: 'var(--danger)', warning: 'var(--warning)', success: 'var(--success)' };
+  document.getElementById('bu-grid').innerHTML = buRows.map(bu => {
+    const sev = buSeverity(bu);
+    return `
+    <button class="bu-card" data-bu="${bu.bu}" style="border:none;">
+      <div class="bu-name"><span><span class="paren">(</span>${BU_LABEL[bu.bu] || bu.bu}<span class="paren">)</span></span> <span class="sev" style="background:${sevColor[sev]}"></span></div>
+      <div class="bu-metric"><span>Tabelas</span><b>${bu.total_tabelas}</b></div>
+      <div class="bu-metric ${bu.testes_falha > 0 ? 'danger' : ''}"><span>Testes com falha</span><b>${bu.testes_falha}</b></div>
+      <div class="bu-metric"><span>Testes ok</span><b>${bu.testes_sucesso}</b></div>
+      <div class="bu-metric ${bu.tabelas_sem_teste > 0 ? 'warning' : ''}"><span>Sem nenhum teste</span><b>${bu.tabelas_sem_teste}</b></div>
+      <div class="bu-metric"><span>Dashboards (aprox.)</span><b>${bu.dashboards_aprox}</b></div>
+    </button>`;
+  }).join('');
+
+  document.querySelectorAll('.bu-card').forEach(card => {
+    card.addEventListener('click', () => openBuDrilldown(card.dataset.bu, card));
+  });
+}
+
+function openBuDrilldown(bu, cardEl) {
+  document.querySelectorAll('.bu-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+
+  const tables = SNOWFLAKE_TABELAS.filter(t => t.bu === bu);
+  document.getElementById('bu-drilldown-title').innerHTML = `<span class="paren" style="color:var(--brand)">(</span>${BU_LABEL[bu] || bu}<span class="paren" style="color:var(--brand)">)</span> — ${tables.length} tabela(s)`;
+  document.getElementById('bu-drilldown').style.display = 'block';
+
+  const rows = tables.map(t => {
+    const testInfo = Number(t.testes_total) === 0
+      ? '<span class="test-mini none">sem teste</span>'
+      : `<span class="test-mini">${t.testes_falha > 0 ? `<span class="fail">${t.testes_falha} falha</span>` : `<span class="ok">${t.testes_sucesso} ok</span>`} / ${t.testes_total}</span>`;
+    const omLink = t.om_url ? `<a href="${t.om_url}" target="_blank" rel="noopener">OM</a>` : `<a class="disabled">OM</a>`;
+    const sfLink = t.snowflake_url ? `<a href="${t.snowflake_url}" target="_blank" rel="noopener">Snowflake</a>` : `<a class="disabled">Snowflake</a>`;
+    return `<tr>
+      <td class="name">${t.tabela}</td>
+      <td style="font-family: var(--mono); font-size:12px; color:var(--text-dim);">${t.database}.${t.schema}</td>
+      <td>${t.tem_descricao === 'Sim' ? statusDot('success') : statusDot('inactive')}</td>
+      <td>${t.tem_owner === 'Sim' ? statusDot('success') : statusDot('inactive')}</td>
+      <td>${testInfo}</td>
+      <td><div class="link-icons">${omLink}${sfLink}</div></td>
+    </tr>`;
+  }).join('');
+  document.querySelector('#bu-tables-table tbody').innerHTML = rows || '<tr><td class="empty" colspan="6">Nenhuma tabela nessa BU.</td></tr>';
+
+  const fqnSet = new Set(tables.map(t => t.fqn));
+  const buDq = SNOWFLAKE_DQ.filter(r => {
+    const m = TABLE_LINK_RE.exec(r.entidade || '');
+    return m && fqnSet.has(m[1]);
+  }).filter(r => ['Failed', 'Aborted'].includes(r.resultado));
+  const dqRows = buDq.map(r => `
+    <tr><td class="name">${r.nome_teste}</td><td style="font-size:12px; color:var(--text-dim);">${(r.entidade||'').split('::').slice(-2).join(' · ')}</td><td>${statusDot('failed')}</td></tr>
+  `).join('');
+  document.querySelector('#dq-table tbody').innerHTML = dqRows || '<tr><td class="empty" colspan="3">Nenhuma falha nessa BU 🎉</td></tr>';
+
+  document.getElementById('bu-drilldown').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.getElementById('bu-drilldown-close').addEventListener('click', () => {
+  document.getElementById('bu-drilldown').style.display = 'none';
+  document.querySelectorAll('.bu-card').forEach(c => c.classList.remove('selected'));
+});
+
 async function renderSnowflake() {
-  const [cat, dq, cd] = await Promise.all([loadCSV('snowflake_catalogo.csv'), loadCSV('snowflake_dq.csv'), loadCSV('snowflake_cd.csv')]);
+  const [cat, dq, cd, buRows, tabelas] = await Promise.all([
+    loadCSV('snowflake_catalogo.csv'), loadCSV('snowflake_dq.csv'), loadCSV('snowflake_cd.csv'),
+    loadCSV('snowflake_bu.csv'), loadCSV('snowflake_tabelas.csv'),
+  ]);
   const c = cat[0] || {};
+  SNOWFLAKE_TABELAS = tabelas;
+  SNOWFLAKE_DQ = dq;
   const dqFail = dq.filter(r => ['Failed', 'Aborted'].includes(r.resultado)).length;
   const cdFail = cd.filter(r => !['Success', 'Aligned'].includes(r.status)).length;
 
@@ -230,14 +429,12 @@ async function renderSnowflake() {
     kpiTile(c.total_tabelas || '—', 'Tabelas no catálogo'),
     kpiTile(c.pct_com_descricao !== undefined ? c.pct_com_descricao + '%' : '—', 'Com descrição'),
     kpiTile(c.pct_com_owner !== undefined ? c.pct_com_owner + '%' : '—', 'Com owner'),
+    kpiTile(c.total_dashboards ?? '—', 'Dashboards cadastrados'),
     kpiTile(dqFail, 'Testes DQ com falha', dqFail > 0 ? 'danger' : 'success'),
     kpiTile(cdFail, 'Contratos com problema', cdFail > 0 ? 'danger' : 'success'),
   ].join('');
 
-  const dqRows = dq.filter(r => ['Failed', 'Aborted'].includes(r.resultado)).map(r => `
-    <tr><td class="name">${r.nome_teste}</td><td style="font-size:12px; color:var(--text-dim);">${(r.entidade||'').split('::').slice(-2).join(' · ')}</td><td>${statusDot('failed')}</td></tr>
-  `).join('');
-  document.querySelector('#dq-table tbody').innerHTML = dqRows || '<tr><td class="empty" colspan="3">Nenhuma falha 🎉</td></tr>';
+  if (buRows.length) renderBuGrid(buRows);
 
   const cdRows = cd.map(r => `
     <tr><td class="name">${r.nome_contrato}</td><td>${statusDot(r.status)}</td></tr>
@@ -251,9 +448,52 @@ async function renderUpdated() {
   document.getElementById('global-updated').textContent = ts ? `atualizado ${fmtDate(ts)}` : 'sem dados';
 }
 
-document.querySelectorAll('nav.tabs button').forEach(btn => {
+async function renderOm() {
+  const [apps, agentes, scripts, glossario] = await Promise.all([
+    loadCSV('om_apps.csv'), loadCSV('om_agentes.csv'), loadCSV('om_scripts.csv'), loadCSV('om_glossario.csv'),
+  ]);
+  const g = glossario[0] || {};
+  const agentesAtivos = agentes.filter(a => a.pausado === 'Nao').length;
+  const appsAtivas = apps.filter(a => a.enabled === 'Sim').length;
+
+  document.getElementById('om-kpis').innerHTML = [
+    kpiTile(agentesAtivos + '/' + agentes.length, 'Agentes ativos'),
+    kpiTile(appsAtivas + '/' + apps.length, 'Apps nativas ativas'),
+    kpiTile(g.total_termos ?? '—', 'Termos no glossário'),
+    kpiTile(g.total_domains ?? '—', 'Domains'),
+    kpiTile(scripts.length || '—', 'Scripts no servidor'),
+  ].join('');
+
+  const agentRows = agentes.map(a => `
+    <tr>
+      <td class="name">${a.nome}</td>
+      <td style="font-size:12.5px; color:var(--text-dim);">${a.servico || '—'}</td>
+      <td><span class="badge">${a.tipo}</span></td>
+      <td><span class="badge">${a.camada}</span></td>
+      <td>${a.pausado === 'Nao' ? statusDot('active') : statusDot('inactive')}</td>
+      <td style="font-family: var(--mono); color: var(--text-dim); font-size:12px;">${a.cron || '—'}</td>
+    </tr>`).join('');
+  document.querySelector('#om-agentes-table tbody').innerHTML = agentRows || '<tr><td class="empty" colspan="6">Sem dados ainda.</td></tr>';
+
+  const appRows = apps.map(a => `
+    <tr>
+      <td class="name">${a.nome}</td>
+      <td>${a.enabled === 'Sim' ? statusDot('active') : statusDot('inactive')}</td>
+      <td style="font-family: var(--mono); color: var(--text-dim); font-size:12px;">${a.cron || 'sob demanda'}</td>
+    </tr>`).join('');
+  document.querySelector('#om-apps-table tbody').innerHTML = appRows || '<tr><td class="empty" colspan="3">Sem dados ainda.</td></tr>';
+
+  const scriptRows = scripts.map(s => `
+    <tr>
+      <td class="name" title="${(s.descricao || '').replace(/"/g, '&quot;')}">${s.nome}</td>
+      <td><span class="badge">${s.agendamento || 'manual'}</span></td>
+    </tr>`).join('');
+  document.querySelector('#om-scripts-table tbody').innerHTML = scriptRows || '<tr><td class="empty" colspan="2">Sem dados ainda.</td></tr>';
+}
+
+document.querySelectorAll('nav.sidebar button[data-panel]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('nav.sidebar button[data-panel]').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('section.panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(`panel-${btn.dataset.panel}`).classList.add('active');
@@ -261,7 +501,7 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
 });
 
 (async () => {
-  await Promise.all([renderAirbyte(), renderAirflow(), renderSnowflake(), renderUpdated()]);
+  await Promise.all([renderAirbyte(), renderAirflow(), renderSnowflake(), renderOm(), renderUpdated()]);
 })();
 </script>
 

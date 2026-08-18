@@ -16,11 +16,11 @@ DIM_COTISTAS_SINGULARE_contract,,Running
 DIM_ENTIDADE_contract,,Running
 DIM_FUNDO_contract,,Running
 DIM_FUNDOS_SINGULARE_contract,,Running
-DT_COTISTAS_SNCI11_contract,,Running
-DT_COTISTAS_SNEL11_contract,,Running
-DT_COTISTAS_SNFF11_contract,,Running
-DT_COTISTAS_SNID11_contract,,Running
-DT_COTISTAS_SNME11_contract,,Running
+DT_COTISTAS_SNCI11_contract,,Aborted
+DT_COTISTAS_SNEL11_contract,,Failed
+DT_COTISTAS_SNFF11_contract,,Aborted
+DT_COTISTAS_SNID11_contract,,Aborted
+DT_COTISTAS_SNME11_contract,,Aborted
 DT_NEWS_AI_contract,,Running
 ESTOQUE_contract,,Running
 FATO_MERCADO_FUNDOS_ESTRUTURADOS_contract,,Running
@@ -28,7 +28,7 @@ FATO_MERCADO_FUNDOS_LIQUIDOS_contract,,Running
 FATO_MERCADO_INDICES_contract,,Running
 FATO_POSICAO_DIARIA_contract,,Running
 FATO_POSICAO_SINGULARE_contract,,Running
-FUNIL_ADVISORY_contract,,Running
+FUNIL_ADVISORY_contract,,Failed
 HUBSPOT_DEALS_contract,,Running
 MARKETSHARE_LIQUIDEZ_FUNDOS_ESTRUTURADOS_contract,,Running
 MARKETSHARE_PVP_FUNDOS_ESTRUTURADOS_contract,,Running
@@ -46,7 +46,7 @@ TESTE_DT_COTISTAS_SNAG11_2024_contract,,Running
 TESTE_DT_COTISTAS_SNAG11_V2_contract,,Running
 TESTE_TRATAMENTO_OUTLIERS_SNEL_contract,,Running
 VOLATILIDADE_MERCADO_contract,,Running
-VW_BTG_PL_TOTAL_contract,,Running
-VW_FUNIL_CONSULTORIA_contract,,Running
+VW_BTG_PL_TOTAL_contract,,Failed
+VW_FUNIL_CONSULTORIA_contract,,Success
 XML_HEADER_contract,,Running
 XML_TITPRIVADO_contract,,Running
