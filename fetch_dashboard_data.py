@@ -195,6 +195,8 @@ def fetch_airbyte():
 
         pulse = [PULSE_MAP.get(j.get("status"), "unknown") for j in jobs[:PULSE_SAMPLES]]
         pulse.reverse()
+        pulse_dates = [j.get("startTime", "") for j in jobs[:PULSE_SAMPLES]]
+        pulse_dates.reverse()
 
         completed = [j for j in jobs if j.get("status") in ("succeeded", "failed", "incomplete")]
         n_success = sum(1 for j in completed if j.get("status") == "succeeded")
@@ -218,12 +220,13 @@ def fetch_airbyte():
             "taxa_sucesso_pct": success_rate,
             "execucoes_amostra": len(completed),
             "pulso": "|".join(pulse),
+            "pulso_datas": "|".join(pulse_dates),
             "url": url,
         })
 
     write_csv("airbyte.csv",
               ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "ultimo_status",
-               "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso", "url"],
+               "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso", "pulso_datas", "url"],
               rows)
 
 
@@ -340,6 +343,10 @@ def fetch_airflow():
 
         history = om_pipeline_status_history(s, fqn, PULSE_SAMPLES)
         pulse = [STATUS_TO_PULSE.get(h.get("executionStatus"), "unknown") for h in history]
+        pulse_dates = [
+            datetime.fromtimestamp(h["timestamp"] / 1000, tz=timezone.utc).isoformat() if h.get("timestamp") else ""
+            for h in history
+        ]
 
         completed = [h for h in history if h.get("executionStatus") in ("Successful", "Failed")]
         n_success = sum(1 for h in completed if h.get("executionStatus") == "Successful")
@@ -354,12 +361,13 @@ def fetch_airflow():
             "taxa_sucesso_pct": success_rate,
             "execucoes_amostra": len(completed),
             "pulso": "|".join(pulse),
+            "pulso_datas": "|".join(pulse_dates),
             "url": url,
         })
 
     write_csv("airflow.csv",
               ["id", "nome", "responsavel", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct",
-               "execucoes_amostra", "pulso", "url"],
+               "execucoes_amostra", "pulso", "pulso_datas", "url"],
               rows)
 
 

@@ -323,10 +323,20 @@ function statusDot(status) {
   const key = (status || '').toLowerCase();
   return `<span class="status-dot ${key}">${STATUS_LABEL[key] || status || '—'}</span>`;
 }
-function pulseHtml(pulseStr) {
+function pulseHtml(pulseStr, datesStr, url) {
   const pulse = (pulseStr || '').split('|').filter(Boolean);
   if (!pulse.length) return '<span class="empty" style="padding:0;">sem histórico</span>';
-  return `<div class="pulse">${pulse.map(p => `<div class="tick ${p}" title="${STATUS_LABEL[p] || p}"></div>`).join('')}</div>`;
+  const dates = (datesStr || '').split('|');
+  const ticks = pulse.map((p, i) => {
+    const label = STATUS_LABEL[p] || p;
+    const date = dates[i] ? fmtDate(dates[i]) : '';
+    const title = date ? `${label} — ${date}` : label;
+    return `<div class="tick ${p}" title="${title}"></div>`;
+  }).join('');
+  if (url) {
+    return `<a class="pulse" href="${url}" target="_blank" rel="noopener" style="text-decoration:none;">${ticks}</a>`;
+  }
+  return `<div class="pulse">${ticks}</div>`;
 }
 function kpiTile(value, label, tone) {
   return `<div class="kpi ${tone || ''}"><div class="value">${value}</div><div class="label">${label}</div></div>`;
@@ -483,7 +493,7 @@ async function renderAirbyte() {
       <td>${statusDot(r.ultimo_status)}</td>
       <td style="font-family: var(--mono); color: var(--text-dim); font-size:12.5px;">${fmtDate(r.ultima_execucao)}</td>
       <td style="font-family: var(--mono);">${r.taxa_sucesso_pct !== '' ? r.taxa_sucesso_pct + '%' : '—'}</td>
-      <td>${pulseHtml(r.pulso)}</td>
+      <td>${pulseHtml(r.pulso, r.pulso_datas, r.url)}</td>
     </tr>`,
   });
   wireKpiFilters('airbyte-kpis', tiles, ctrl);
@@ -513,7 +523,7 @@ async function renderAirflow() {
       <td>${statusDot(r.ultimo_status)}</td>
       <td style="font-family: var(--mono); color: var(--text-dim); font-size:12.5px;">${fmtDate(r.ultima_execucao)}</td>
       <td style="font-family: var(--mono);">${r.taxa_sucesso_pct !== '' ? r.taxa_sucesso_pct + '%' : '—'}</td>
-      <td>${pulseHtml(r.pulso)}</td>
+      <td>${pulseHtml(r.pulso, r.pulso_datas, r.url)}</td>
     </tr>`,
   });
   wireKpiFilters('airflow-kpis', tiles, ctrl);
