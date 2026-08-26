@@ -35,7 +35,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
           git add data/airbyte.csv data/airflow.csv data/_meta.csv
-          git diff --staged --quiet || git commit -m "Atualiza dados de Airflow/Airbyte [skip ci]"
-          git push
+          if git diff --staged --quiet; then
+            echo "Sem mudanças, nada a commitar."
+          else
+            git commit -m "Atualiza dados de Airflow/Airbyte [skip ci]"
+            git pull --rebase
+            git push
+          fi
