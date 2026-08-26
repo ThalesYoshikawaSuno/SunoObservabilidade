@@ -13,7 +13,7 @@ distribution_produto_canonico,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING
 distribution_produto_canonico,<#E::table::Suno SnowFlake.REFINED_STATUS_INVEST.ASSINATURAS.FATO_LIFECYCLE_ASSINATURAS_SI>,Success
 freshness_data_pagamento,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_POR_HORA_SUNOCODE>,Success
 freshness_dt_inicio_assinatura,<#E::table::Suno SnowFlake.REFINED_STATUS_INVEST.ASSINATURAS.FATO_LIFECYCLE_ASSINATURAS_SI>,Success
-freshness_lastmodificationtime,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH>,Failed
+freshness_lastmodificationtime,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH>,Success
 schema_column_count,<#E::table::Suno SnowFlake.REFINED_GLOBAL.ASSINATURAS.DT_LIFECYCLE_SUBS_UN_TRUTH>,Success
 schema_column_count,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.VW_VENDAS_POR_HORA_SUNOCODE>,Success
 schema_column_count,<#E::table::Suno SnowFlake.SERVING_LAYER.MARKETING.DT_LEADS_SUNOCODE>,Success
