@@ -1,9 +1,10 @@
-name: Atualizar dados do dashboard (semanal)
+name: Atualizar Airflow/Airbyte (a cada 2h, 6h-20h BRT)
 
 on:
   schedule:
-    - cron: "0 8 * * 1"   # toda segunda-feira, 8h UTC (5h BRT)
-  workflow_dispatch: {}   # permite rodar manualmente pela aba Actions
+    # 6,8,10,12,14,16,18,20h BRT = 9,11,13,15,17,19,21,23h UTC (BRT = UTC-3)
+    - cron: "0 9,11,13,15,17,19,21,23 * * *"
+  workflow_dispatch: {}
 
 jobs:
   fetch-data:
@@ -18,7 +19,7 @@ jobs:
       - name: Instalar dependências
         run: pip install requests
 
-      - name: Coletar dados
+      - name: Coletar dados (Airbyte + Airflow)
         env:
           AIRBYTE_URL: ${{ secrets.AIRBYTE_URL }}
           AIRBYTE_CLIENT_ID: ${{ secrets.AIRBYTE_CLIENT_ID }}
@@ -28,15 +29,13 @@ jobs:
           OM_URL: ${{ secrets.OM_URL }}
           OM_TOKEN: ${{ secrets.OM_TOKEN }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        # airbyte/airflow ficaram de fora daqui - agora atualizam a cada 2h via
-        # update-data-airflow-airbyte.yml, esse job semanal so cobre o resto.
-        run: python3 fetch_dashboard_data.py --only snowflake,om
+        run: python3 fetch_dashboard_data.py --only airbyte,airflow
 
       - name: Commitar dados atualizados
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull --rebase
-          git add data/*.csv
-          git diff --staged --quiet || git commit -m "Atualiza dados semanais do dashboard [skip ci]"
+          git add data/airbyte.csv data/airflow.csv data/_meta.csv
+          git diff --staged --quiet || git commit -m "Atualiza dados de Airflow/Airbyte [skip ci]"
           git push

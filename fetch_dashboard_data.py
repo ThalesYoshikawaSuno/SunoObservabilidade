@@ -46,6 +46,13 @@ SNOWFLAKE_SERVICE_NAME = os.environ.get("SNOWFLAKE_SERVICE_NAME", "Suno SnowFlak
 AIRFLOW_PUBLIC_URL  = os.environ.get("AIRFLOW_PUBLIC_URL", "https://airflow-v2-3438dd66106286d7.suno.com.br")
 AIRBYTE_PUBLIC_URL  = os.environ.get("AIRBYTE_PUBLIC_URL", "https://airbyte-c2dc4574f078cdf5.suno.com.br")
 
+# GitLab - mesma credencial/repo ja usada pelo airflow_lineage.py no servidor
+# (le default_args do codigo das DAGs). GITLAB_TOKEN opcional: se nao setado,
+# o dashboard so usa o owner que ja vem do OM, sem quebrar a run.
+GITLAB_TOKEN   = os.environ.get("GITLAB_TOKEN", "")
+GITLAB_PROJECT = os.environ.get("GITLAB_PROJECT", "suno-research/data-team/suno-airflow-dags")
+GITLAB_BRANCH  = os.environ.get("GITLAB_BRANCH", "master")
+
 PULSE_SAMPLES = 10  # últimas N execuções mostradas na faixa de pulso
 
 AIRBYTE_HEADERS = {
@@ -220,6 +227,47 @@ def fetch_airbyte():
               rows)
 
 
+# ── GitLab (autor do ultimo commit do arquivo da DAG, fallback quando o OM
+# nao tem owner declarado em default_args) ──────────────────────────────────
+
+_GITLAB_SESSION = None
+
+
+def gitlab_session():
+    global _GITLAB_SESSION
+    if _GITLAB_SESSION is None:
+        s = requests.Session()
+        s.headers.update({"PRIVATE-TOKEN": GITLAB_TOKEN})
+        retry = Retry(total=3, backoff_factor=2, status_forcelist=[502, 503, 504],
+                      allowed_methods=["GET"])
+        s.mount("https://", HTTPAdapter(max_retries=retry))
+        _GITLAB_SESSION = s
+    return _GITLAB_SESSION
+
+
+def gitlab_last_author(dag_id):
+    """Autor do ultimo commit do arquivo da DAG no GitLab. Mesma resolucao de
+    nome de arquivo do airflow_lineage.py (tenta '{dag_id}_dag.py', depois
+    '{dag_id}.py', repo eh flat na raiz). None se GITLAB_TOKEN nao setado,
+    arquivo nao encontrado, ou sem historico de commit."""
+    if not GITLAB_TOKEN or not dag_id:
+        return ""
+    s = gitlab_session()
+    proj = quote(GITLAB_PROJECT, safe="")
+    for filename in (f"{dag_id}_dag.py", f"{dag_id}.py"):
+        try:
+            r = s.get(f"https://gitlab.com/api/v4/projects/{proj}/repository/commits",
+                       params={"path": filename, "ref_name": GITLAB_BRANCH, "per_page": 1},
+                       timeout=20)
+            if r.status_code == 200:
+                commits = r.json()
+                if commits:
+                    return commits[0].get("author_name", "")
+        except requests.RequestException:
+            pass
+    return ""
+
+
 # ── OpenMetadata (Airflow) ───────────────────────────────────────────────────
 
 def om_session():
@@ -279,11 +327,16 @@ def fetch_airflow():
         latest = p.get("pipelineStatus") or {}
         latest_status = latest.get("executionStatus", "sem_execucao")
         url = f"{AIRFLOW_PUBLIC_URL}/dags/{quote(dag_id, safe='')}/grid" if dag_id else ""
-        # Owner vem do script airflow_lineage.py (le default_args do codigo via GitLab).
-        # So existe quando o autor da DAG de fato setou 'owner' no codigo -> cobertura parcial,
-        # nao e falha de coleta daqui. Vazio = "-" no dashboard, nao inventar responsavel.
+        # Owner (time) vem do script airflow_lineage.py (le default_args do codigo
+        # via GitLab) - so existe quando o autor da DAG de fato setou 'owner' no
+        # codigo, cobertura parcial (~50%). Quando falta, cai pro autor do ultimo
+        # commit do arquivo no GitLab (pessoa, nao time) - marcado com "(GitLab)"
+        # pra deixar claro que e inferido, nao declarado oficialmente.
         owners = p.get("owners") or []
         responsavel = ", ".join(o.get("displayName") or o.get("name", "") for o in owners) or ""
+        if not responsavel:
+            autor = gitlab_last_author(dag_id)
+            responsavel = f"{autor} (GitLab)" if autor else ""
 
         history = om_pipeline_status_history(s, fqn, PULSE_SAMPLES)
         pulse = [STATUS_TO_PULSE.get(h.get("executionStatus"), "unknown") for h in history]
@@ -520,15 +573,32 @@ def write_scripts_csv():
     write_csv("om_scripts.csv", ["nome", "agendamento", "descricao"], SERVER_SCRIPTS)
 
 
+FETCHERS = {
+    "airbyte": fetch_airbyte,
+    "airflow": fetch_airflow,
+    "snowflake": fetch_snowflake,
+    "om": fetch_om_overview,
+}
+
+
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--only", default="",
+        help="Lista separada por virgula: airbyte,airflow,snowflake,om. "
+             "Vazio = roda tudo (comportamento padrao, usado no job semanal).",
+    )
+    args = parser.parse_args()
+    only = [s.strip() for s in args.only.split(",") if s.strip()] or list(FETCHERS)
+
     print("=" * 65)
-    print("Coletando dados do dashboard semanal — Suno")
+    print(f"Coletando dados do dashboard — Suno ({', '.join(only)})")
     print("=" * 65)
-    fetch_airbyte()
-    fetch_airflow()
-    fetch_snowflake()
-    fetch_om_overview()
-    write_scripts_csv()
+    for key in only:
+        FETCHERS[key]()
+    if "om" in only:
+        write_scripts_csv()
     write_meta()
     print("Concluído.")
 
