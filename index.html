@@ -69,6 +69,10 @@
 
   table.data { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   table.data th { text-align: left; font-weight: 600; color: var(--text-dim); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  table.data th[data-sort-key] { cursor: pointer; user-select: none; white-space: nowrap; }
+  table.data th[data-sort-key]:hover { color: var(--text); }
+  table.data th.sort-active { color: var(--brand); }
+  table.data th .sort-arrow { display: inline-block; width: 9px; margin-left: 2px; font-size: 9px; }
   table.data td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   table.data tr:hover td { background: var(--surface-2); }
   table.data td.name { font-weight: 500; max-width: 340px; }
@@ -175,7 +179,16 @@
     <div class="kpi-row" id="airbyte-kpis"></div>
     <div class="table-scroll">
       <table class="data">
-        <thead><tr><th>Conexão</th><th>Responsável</th><th>Estado</th><th>Agendamento</th><th>Último status</th><th>Última execução</th><th>Taxa sucesso</th><th>Pulso (recente →)</th></tr></thead>
+        <thead id="airbyte-thead"><tr>
+          <th data-sort-key="nome" data-sort-type="string">Conexão<span class="sort-arrow"></span></th>
+          <th data-sort-key="responsavel" data-sort-type="string">Responsável<span class="sort-arrow"></span></th>
+          <th data-sort-key="status_conexao" data-sort-type="string">Estado<span class="sort-arrow"></span></th>
+          <th data-sort-key="tipo_agendamento" data-sort-type="string">Agendamento<span class="sort-arrow"></span></th>
+          <th data-sort-key="ultimo_status" data-sort-type="string">Último status<span class="sort-arrow"></span></th>
+          <th data-sort-key="ultima_execucao" data-sort-type="date">Última execução<span class="sort-arrow"></span></th>
+          <th data-sort-key="taxa_sucesso_pct" data-sort-type="number">Taxa sucesso<span class="sort-arrow"></span></th>
+          <th>Pulso (recente →)</th>
+        </tr></thead>
         <tbody id="airbyte-table"></tbody>
       </table>
     </div>
@@ -193,7 +206,14 @@
     <div class="kpi-row" id="airflow-kpis"></div>
     <div class="table-scroll">
       <table class="data">
-        <thead><tr><th>DAG</th><th>Responsável</th><th>Último status</th><th>Última execução</th><th>Taxa sucesso</th><th>Pulso (recente →)</th></tr></thead>
+        <thead id="airflow-thead"><tr>
+          <th data-sort-key="nome" data-sort-type="string">DAG<span class="sort-arrow"></span></th>
+          <th data-sort-key="responsavel" data-sort-type="string">Responsável<span class="sort-arrow"></span></th>
+          <th data-sort-key="ultimo_status" data-sort-type="string">Último status<span class="sort-arrow"></span></th>
+          <th data-sort-key="ultima_execucao" data-sort-type="date">Última execução<span class="sort-arrow"></span></th>
+          <th data-sort-key="taxa_sucesso_pct" data-sort-type="number">Taxa sucesso<span class="sort-arrow"></span></th>
+          <th>Pulso (recente →)</th>
+        </tr></thead>
         <tbody id="airflow-table"></tbody>
       </table>
     </div>
@@ -316,9 +336,25 @@ function loadCSV(name, attempt = 1) {
 // se um status novo aparecer (ex: 'skipped') ele ja ganha filtro sozinho.
 // Controller generico: busca por nome + 1 filtro ativo por vez (campo+valor exato,
 // ou uma funcao predicate pra casos como "status_conexao != active").
-function makeTableController({ rows, tbodyId, renderRow, emptyColspan, searchInputId }) {
+// Compara pelo tipo declarado no header (data-sort-type); vazio/ausente sempre
+// vai pro fim, independente da direcao, pra nao ficar pulando de lugar toda
+// hora que alguem inverte asc/desc.
+function compareForSort(a, b, type) {
+  const emptyA = a === '' || a === undefined || a === null;
+  const emptyB = b === '' || b === undefined || b === null;
+  if (emptyA && emptyB) return 0;
+  if (emptyA) return 1;
+  if (emptyB) return -1;
+  if (type === 'number') return parseFloat(a) - parseFloat(b);
+  if (type === 'date') return new Date(a).getTime() - new Date(b).getTime();
+  return a.toString().localeCompare(b.toString(), 'pt-BR');
+}
+
+function makeTableController({ rows, tbodyId, renderRow, emptyColspan, searchInputId, theadId }) {
   let search = '';
   let filter = null;
+  let sortKey = null;
+  let sortDir = 1;
 
   function matches(r) {
     if (filter) {
@@ -328,7 +364,20 @@ function makeTableController({ rows, tbodyId, renderRow, emptyColspan, searchInp
     return true;
   }
   function apply() {
-    document.getElementById(tbodyId).innerHTML = rows.filter(matches).map(renderRow).join('')
+    let out = rows.filter(matches);
+    if (sortKey) {
+      const emptyA = (r) => r[sortKey] === '' || r[sortKey] == null;
+      out = out.slice().sort((ra, rb) => {
+        // valor vazio sempre no fim, na ordem que ja calculamos em compareForSort;
+        // so inverte o sinal pro resto quando for descendente.
+        const th = document.querySelector(`#${theadId} [data-sort-key="${sortKey}"]`);
+        const type = th ? th.dataset.sortType : 'string';
+        const base = compareForSort(ra[sortKey], rb[sortKey], type);
+        const bothPresent = !emptyA(ra) && !emptyA(rb);
+        return bothPresent ? sortDir * base : base;
+      });
+    }
+    document.getElementById(tbodyId).innerHTML = out.map(renderRow).join('')
       || `<tr><td class="empty" colspan="${emptyColspan}">Nenhum resultado com esse filtro.</td></tr>`;
   }
 
@@ -336,6 +385,24 @@ function makeTableController({ rows, tbodyId, renderRow, emptyColspan, searchInp
     search = e.target.value.trim().toLowerCase();
     apply();
   });
+
+  if (theadId) {
+    document.querySelectorAll(`#${theadId} [data-sort-key]`).forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.sortKey;
+        sortDir = (sortKey === key) ? -sortDir : 1;
+        sortKey = key;
+        document.querySelectorAll(`#${theadId} [data-sort-key]`).forEach(h => {
+          h.classList.remove('sort-active');
+          h.querySelector('.sort-arrow').textContent = '';
+        });
+        th.classList.add('sort-active');
+        th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '▲' : '▼';
+        apply();
+      });
+    });
+  }
+
   apply();
 
   return {
@@ -383,7 +450,7 @@ async function renderAirbyte() {
   document.getElementById('airbyte-kpis').innerHTML = tiles.map(t => t.html).join('');
 
   const ctrl = makeTableController({
-    rows, tbodyId: 'airbyte-table', emptyColspan: 8, searchInputId: 'airbyte-search',
+    rows, tbodyId: 'airbyte-table', emptyColspan: 8, searchInputId: 'airbyte-search', theadId: 'airbyte-thead',
     renderRow: r => `
     <tr>
       ${nameCell(r.nome, r.url, r.ultimo_status === 'failed')}
@@ -415,7 +482,7 @@ async function renderAirflow() {
   document.getElementById('airflow-kpis').innerHTML = tiles.map(t => t.html).join('');
 
   const ctrl = makeTableController({
-    rows, tbodyId: 'airflow-table', emptyColspan: 6, searchInputId: 'airflow-search',
+    rows, tbodyId: 'airflow-table', emptyColspan: 6, searchInputId: 'airflow-search', theadId: 'airflow-thead',
     renderRow: r => `
     <tr>
       ${nameCell(r.nome, r.url, r.ultimo_status === 'failed')}
