@@ -167,6 +167,29 @@ PULSE_MAP = {
     "cancelled": "skipped", "running": "running", "pending": "running",
 }
 
+BASIC_TIMING_PT = {
+    "Every 15 MINUTES": "A cada 15 min", "Every 30 MINUTES": "A cada 30 min",
+    "Every HOUR": "A cada hora", "Every 2 HOURS": "A cada 2h", "Every 3 HOURS": "A cada 3h",
+    "Every 4 HOURS": "A cada 4h", "Every 6 HOURS": "A cada 6h", "Every 8 HOURS": "A cada 8h",
+    "Every 12 HOURS": "A cada 12h", "Every 24 HOURS": "Diário",
+}
+
+
+def airbyte_frequencia(schedule):
+    """Detalhe legivel do agendamento a partir de conn['schedule'] (objeto
+    aninhado - 'scheduleType' NAO fica no nivel raiz da conexao, api publica
+    do airbyte retorna {'scheduleType':..., 'cronExpression'|'basicTiming':...})."""
+    schedule = schedule or {}
+    stype = schedule.get("scheduleType", "unknown")
+    if stype == "manual":
+        return "Manual"
+    if stype == "cron":
+        return schedule.get("cronExpression", "") or "Cron"
+    if stype == "basic":
+        raw = schedule.get("basicTiming", "")
+        return BASIC_TIMING_PT.get(raw, raw)
+    return ""
+
 
 def fetch_airbyte():
     print("Coletando Airbyte...")
@@ -184,7 +207,12 @@ def fetch_airbyte():
         cid = conn["connectionId"]
         name = conn.get("name", cid)
         status = conn.get("status", "unknown")
-        schedule = conn.get("scheduleType", "unknown")
+        # 'scheduleType' fica dentro de conn['schedule'], nao no nivel raiz da
+        # conexao (confirmado ao vivo contra a api publica do airbyte) - o
+        # conn.get("scheduleType") direto sempre caia no default "unknown".
+        schedule_obj = conn.get("schedule") or {}
+        schedule = schedule_obj.get("scheduleType", "unknown")
+        frequencia = airbyte_frequencia(schedule_obj)
         # workspaceId normalmente vem no proprio objeto de conexao; fallback pro
         # unico workspace se so existir um (evita link quebrado por campo ausente).
         wsid = conn.get("workspaceId") or (ws_ids[0] if len(ws_ids) == 1 else "")
@@ -215,6 +243,7 @@ def fetch_airbyte():
             "responsavel": "",
             "status_conexao": status,
             "tipo_agendamento": schedule,
+            "frequencia": frequencia,
             "ultimo_status": PULSE_MAP.get(last_job.get("status"), "sem_execucao") if last_job else "sem_execucao",
             "ultima_execucao": last_job.get("startTime", "") if last_job else "",
             "taxa_sucesso_pct": success_rate,
@@ -225,7 +254,7 @@ def fetch_airbyte():
         })
 
     write_csv("airbyte.csv",
-              ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "ultimo_status",
+              ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "frequencia", "ultimo_status",
                "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso", "pulso_datas", "url"],
               rows)
 
@@ -316,11 +345,23 @@ def om_pipeline_status_history(s, fqn, samples):
 
 STATUS_TO_PULSE = {"Successful": "success", "Failed": "failed", "Pending": "running", "Skipped": "skipped"}
 
+AIRFLOW_PRESET_PT = {
+    "@once": "Uma vez", "@hourly": "A cada hora", "@daily": "Diário",
+    "@weekly": "Semanal", "@monthly": "Mensal", "@yearly": "Anual",
+    "None": "Sem agendamento",
+}
+
+
+def airflow_frequencia(schedule_interval):
+    if not schedule_interval:
+        return "Sem agendamento"
+    return AIRFLOW_PRESET_PT.get(schedule_interval, schedule_interval)
+
 
 def fetch_airflow():
     print("Coletando Airflow (via OpenMetadata)...")
     s = om_session()
-    pipelines = om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": "pipelineStatus,owners", "limit": 100})
+    pipelines = om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": "pipelineStatus,owners,extension,scheduleInterval", "limit": 100})
 
     rows = []
     for p in pipelines:
@@ -332,13 +373,17 @@ def fetch_airflow():
         url = f"{AIRFLOW_PUBLIC_URL}/dags/{quote(dag_id, safe='')}/grid" if dag_id else ""
         # Owner (time) vem do script airflow_lineage.py (le default_args do codigo
         # via GitLab) - so existe quando o autor da DAG de fato setou 'owner' no
-        # codigo, cobertura parcial (~50%). Quando falta, cai pro autor do ultimo
-        # commit do arquivo no GitLab (pessoa, nao time) - marcado com "(GitLab)"
-        # pra deixar claro que e inferido, nao declarado oficialmente.
+        # codigo, cobertura parcial (~50%). Quando falta, usa o autor do ultimo
+        # commit do arquivo no GitLab (pessoa, nao time), ja calculado 1x/dia pelo
+        # cron do airflow_lineage.py no servidor e guardado em extension.gitlabLastAuthor -
+        # le daqui em vez de bater na API do GitLab a cada 2h (167 DAGs x 12x/dia
+        # seria peso desnecessario). So cai pra chamada ao vivo se o servidor ainda
+        # nao rodou pra essa DAG (extension vazia).
         owners = p.get("owners") or []
         responsavel = ", ".join(o.get("displayName") or o.get("name", "") for o in owners) or ""
         if not responsavel:
-            autor = gitlab_last_author(dag_id)
+            cached = (p.get("extension") or {}).get("gitlabLastAuthor") or ""
+            autor = cached.split(" <")[0] if cached else gitlab_last_author(dag_id)
             responsavel = f"{autor} (GitLab)" if autor else ""
 
         history = om_pipeline_status_history(s, fqn, PULSE_SAMPLES)
@@ -356,6 +401,7 @@ def fetch_airflow():
             "id": p.get("id"),
             "nome": name,
             "responsavel": responsavel,
+            "frequencia": airflow_frequencia(p.get("scheduleInterval")),
             "ultimo_status": STATUS_TO_PULSE.get(latest_status, "sem_execucao"),
             "ultima_execucao": datetime.fromtimestamp(latest["timestamp"] / 1000, tz=timezone.utc).isoformat() if latest.get("timestamp") else "",
             "taxa_sucesso_pct": success_rate,
@@ -366,7 +412,7 @@ def fetch_airflow():
         })
 
     write_csv("airflow.csv",
-              ["id", "nome", "responsavel", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct",
+              ["id", "nome", "responsavel", "frequencia", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct",
                "execucoes_amostra", "pulso", "pulso_datas", "url"],
               rows)
 
