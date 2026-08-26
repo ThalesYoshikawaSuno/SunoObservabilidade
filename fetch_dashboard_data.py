@@ -38,6 +38,12 @@ OM_UI_URL = os.environ.get("OM_UI_URL", OM_URL)
 AIRFLOW_SERVICE_NAME   = os.environ.get("AIRFLOW_SERVICE_NAME", "Suno Airflow")
 SNOWFLAKE_SERVICE_NAME = os.environ.get("SNOWFLAKE_SERVICE_NAME", "Suno SnowFlake")
 
+# URLs publicas das UIs (para o botao "abrir" de cada linha no dashboard).
+# Nao confundir com AIRBYTE_URL/OM_URL acima, que sao endpoints de API e podem
+# nao ser navegaveis por humano (proxy interno cf-proxy:800x).
+AIRFLOW_PUBLIC_URL  = os.environ.get("AIRFLOW_PUBLIC_URL", "https://airflow-v2-3438dd66106286d7.suno.com.br")
+AIRBYTE_PUBLIC_URL  = os.environ.get("AIRBYTE_PUBLIC_URL", "https://airbyte-c2dc4574f078cdf5.suno.com.br")
+
 PULSE_SAMPLES = 10  # últimas N execuções mostradas na faixa de pulso
 
 AIRBYTE_HEADERS = {
@@ -170,6 +176,10 @@ def fetch_airbyte():
         name = conn.get("name", cid)
         status = conn.get("status", "unknown")
         schedule = conn.get("scheduleType", "unknown")
+        # workspaceId normalmente vem no proprio objeto de conexao; fallback pro
+        # unico workspace se so existir um (evita link quebrado por campo ausente).
+        wsid = conn.get("workspaceId") or (ws_ids[0] if len(ws_ids) == 1 else "")
+        url = f"{AIRBYTE_PUBLIC_URL}/workspaces/{wsid}/connections/{cid}/status" if wsid else ""
 
         jobs = airbyte_list_all(s, "/jobs", {"connectionId": cid, "jobType": "sync", "orderBy": "createdAt|DESC", "limit": 30})
         jobs.sort(key=lambda j: j.get("startTime", ""), reverse=True)
@@ -186,6 +196,12 @@ def fetch_airbyte():
         rows.append({
             "id": cid,
             "nome": name,
+            # Sem fonte de "responsavel" pra conexao Airbyte ainda - nem a API do
+            # Airbyte nem o OM tem esse dado hoje (diferente do Airflow, que pelo
+            # menos tem cobertura parcial via default_args no codigo). Deixar
+            # vazio em vez de inventar; coluna existe pra manter o mesmo layout
+            # de tabela entre Airbyte e Airflow no dashboard.
+            "responsavel": "",
             "status_conexao": status,
             "tipo_agendamento": schedule,
             "ultimo_status": PULSE_MAP.get(last_job.get("status"), "sem_execucao") if last_job else "sem_execucao",
@@ -193,11 +209,12 @@ def fetch_airbyte():
             "taxa_sucesso_pct": success_rate,
             "execucoes_amostra": len(completed),
             "pulso": "|".join(pulse),
+            "url": url,
         })
 
     write_csv("airbyte.csv",
-              ["id", "nome", "status_conexao", "tipo_agendamento", "ultimo_status",
-               "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso"],
+              ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "ultimo_status",
+               "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso", "url"],
               rows)
 
 
@@ -241,14 +258,21 @@ STATUS_TO_PULSE = {"Successful": "success", "Failed": "failed", "Pending": "runn
 def fetch_airflow():
     print("Coletando Airflow (via OpenMetadata)...")
     s = om_session()
-    pipelines = om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": "pipelineStatus", "limit": 100})
+    pipelines = om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": "pipelineStatus,owners", "limit": 100})
 
     rows = []
     for p in pipelines:
         name = p.get("displayName") or p.get("name")
+        dag_id = p.get("name")  # identificador cru = dag_id real no Airflow (name != displayName)
         fqn = p.get("fullyQualifiedName")
         latest = p.get("pipelineStatus") or {}
         latest_status = latest.get("executionStatus", "sem_execucao")
+        url = f"{AIRFLOW_PUBLIC_URL}/dags/{quote(dag_id, safe='')}/grid" if dag_id else ""
+        # Owner vem do script airflow_lineage.py (le default_args do codigo via GitLab).
+        # So existe quando o autor da DAG de fato setou 'owner' no codigo -> cobertura parcial,
+        # nao e falha de coleta daqui. Vazio = "-" no dashboard, nao inventar responsavel.
+        owners = p.get("owners") or []
+        responsavel = ", ".join(o.get("displayName") or o.get("name", "") for o in owners) or ""
 
         history = om_pipeline_status_history(s, fqn, PULSE_SAMPLES)
         pulse = [STATUS_TO_PULSE.get(h.get("executionStatus"), "unknown") for h in history]
@@ -260,15 +284,18 @@ def fetch_airflow():
         rows.append({
             "id": p.get("id"),
             "nome": name,
+            "responsavel": responsavel,
             "ultimo_status": STATUS_TO_PULSE.get(latest_status, "sem_execucao"),
             "ultima_execucao": datetime.fromtimestamp(latest["timestamp"] / 1000, tz=timezone.utc).isoformat() if latest.get("timestamp") else "",
             "taxa_sucesso_pct": success_rate,
             "execucoes_amostra": len(completed),
             "pulso": "|".join(pulse),
+            "url": url,
         })
 
     write_csv("airflow.csv",
-              ["id", "nome", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso"],
+              ["id", "nome", "responsavel", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct",
+               "execucoes_amostra", "pulso", "url"],
               rows)
 
 
