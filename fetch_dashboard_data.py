@@ -17,6 +17,8 @@ import re
 import csv
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from urllib.parse import quote
 from datetime import datetime, timezone
 from collections import defaultdict
@@ -223,6 +225,15 @@ def fetch_airbyte():
 def om_session():
     s = requests.Session()
     s.headers.update({"Authorization": f"Bearer {OM_TOKEN}"})
+    # Retry em falha de conexao/timeout - o runner do GitHub Actions ja teve
+    # blip de rede pontual pra alcancar o servidor (2026-08-26, ConnectTimeout
+    # isolado, servidor respondeu normal logo depois). Nao adianta falhar a
+    # run inteira por 1 timeout passageiro.
+    retry = Retry(total=3, backoff_factor=2, status_forcelist=[502, 503, 504],
+                  allowed_methods=["GET"])
+    adapter = HTTPAdapter(max_retries=retry)
+    s.mount("http://", adapter)
+    s.mount("https://", adapter)
     return s
 
 

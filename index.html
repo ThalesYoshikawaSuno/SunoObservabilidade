@@ -35,7 +35,7 @@
   .updated { font-family: var(--mono); font-size: 11px; color: var(--text-faint); padding: 16px 10px 4px; border-top: 1px solid var(--border); margin-top: 12px; }
 
   .content-area { flex: 1 1 auto; min-width: 0; }
-  main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 80px; }
+  main { max-width: 1760px; width: 100%; margin: 0 auto; padding: 32px 24px 80px; }
   section.panel { display: none; }
   section.panel.active { display: block; animation: fadein .25s ease; }
   @keyframes fadein { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: none; } }
@@ -101,7 +101,11 @@
   .subgrid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
   @media (max-width: 860px) { .subgrid { grid-template-columns: 1fr; } }
   h2.sub-title { font-family: var(--mono); font-size: 14px; font-weight: 600; margin: 0 0 12px; color: var(--text-dim); }
-  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); scrollbar-width: auto; scrollbar-color: var(--text-faint) var(--surface-2); }
+  .table-scroll::-webkit-scrollbar { height: 11px; }
+  .table-scroll::-webkit-scrollbar-track { background: var(--surface-2); }
+  .table-scroll::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 10px; border: 2px solid var(--surface-2); }
+  .table-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
   .table-scroll table.data { min-width: 480px; }
   footer { text-align: center; color: var(--text-faint); font-size: 12px; padding: 24px; font-family: var(--mono); }
 
