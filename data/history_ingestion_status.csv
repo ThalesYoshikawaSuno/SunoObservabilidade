@@ -1,0 +1,3 @@
+id,nome,ultimo_status,ultima_execucao,taxa_sucesso_pct,coletado_em
+c5ae6d21-6dfa-4545-8155-71e410cda215,Metadata Agent,running,2026-08-27T12:47:11.591000+00:00,,2026-08-27T14:22:09.709865+00:00
+aeee7dac-87b1-4698-becf-c53cb7b6f9c9,Suno_AirByte_metadata_hHAF0BY6,failed,2026-08-26T12:05:59.394000+00:00,,2026-08-27T14:22:09.709871+00:00
