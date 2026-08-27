@@ -201,11 +201,13 @@ def _slack_user_id():
     return _SLACK_USER_ID or ""
 
 
-def notify_slack_dm(text):
+def notify_slack_dm(text, channel=None):
+    """channel=None manda pro usuario padrao (SLACK_USER_ID/lookup por e-mail).
+    Passar um member id especifico manda pra essa pessoa em vez disso."""
     if not SLACK_TOKEN:
         print(f"  [slack] (SLACK_TOKEN nao setado, so log) {text}")
         return
-    uid = _slack_user_id()
+    uid = channel or _slack_user_id()
     if not uid:
         print(f"  [slack] usuario nao resolvido, so log: {text}")
         return
@@ -215,9 +217,48 @@ def notify_slack_dm(text):
                            json={"channel": uid, "text": text}, timeout=15)
         d = r.json()
         if not d.get("ok"):
-            print(f"  [slack] postMessage falhou: {d.get('error')}")
+            print(f"  [slack] postMessage falhou (channel={uid}): {d.get('error')}")
     except requests.RequestException as e:
-        print(f"  [slack] postMessage erro: {e}")
+        print(f"  [slack] postMessage erro (channel={uid}): {e}")
+
+
+# ── Mapeamento time -> Slack (pra rotear alerta pro responsavel real, alem
+# do usuario padrao que SEMPRE recebe). Atualizar aqui conforme o time muda
+# de pessoas ou o mapeamento de responsaveis for expandido no OM/GitLab. ──
+SLACK_TEAM_MAP = {
+    "paulo sousa": "U09TUHARWQ4",
+    "paulo.sousa@suno.com.br": "U09TUHARWQ4",
+    "giovanni vargas": "U09RA5XRE90",
+    "giovanni.vargas@suno.com.br": "U09RA5XRE90",
+    "cedric": "U09RGBPF7AS",
+    "cedric fagundes": "U09RGBPF7AS",
+    "cedric.fagundes@suno.com.br": "U09RGBPF7AS",
+    "andre camacho": "U09MGLPK615",
+    "andré camacho": "U09MGLPK615",
+    "andre.camacho@suno.com.br": "U09MGLPK615",
+}
+
+
+def slack_id_for_responsible(responsavel):
+    """Tenta casar o texto livre do campo 'responsavel' (nome do OM, autor do
+    GitLab, e-mail) contra o time conhecido. None se nao bater com ninguem -
+    nesse caso so o usuario padrao (sempre notificado) recebe o alerta."""
+    if not responsavel:
+        return None
+    haystack = responsavel.lower()
+    for key, slack_id in SLACK_TEAM_MAP.items():
+        if key in haystack:
+            return slack_id
+    return None
+
+
+def notify_with_responsible(text, responsavel=None):
+    """Sempre notifica o usuario padrao. Se o responsavel bater com alguem do
+    time, notifica essa pessoa tambem (mensagem separada, nao substitui)."""
+    notify_slack_dm(text)
+    match_id = slack_id_for_responsible(responsavel)
+    if match_id:
+        notify_slack_dm(text, channel=match_id)
 
 
 # ── Classificação por BU ────────────────────────────────────────────────────
@@ -843,10 +884,26 @@ def _om_pipeline_names(s, service_name):
     return {p.get("name") for p in pipelines if p.get("name")}
 
 
+# ── Estado de alerta ja enviado - evita reenviar o mesmo item toda hora.
+# Um item some da lista (e volta a poder alertar) quando deixa de aparecer
+# como "faltando" - ou seja, foi corrigido (catalogado) ou parou de rodar. ──
+
+def _load_alerted_keys():
+    path = os.path.join(OUT_DIR, "reconcile_alerted.csv")
+    if not os.path.exists(path):
+        return set()
+    with open(path, newline="", encoding="utf-8") as f:
+        return {row["key"] for row in csv.DictReader(f) if row.get("key")}
+
+
+def _save_alerted_keys(keys):
+    write_csv("reconcile_alerted.csv", ["key"], [{"key": k} for k in sorted(keys)])
+
+
 def reconcile_and_alert(airbyte_rows=None):
     print("Reconciliando DAGs/conexoes reais vs. catalogadas no OM...")
     s = om_session()
-    missing = []
+    missing = []  # lista de (key, mensagem, responsavel_hint)
 
     if AIRFLOW_API_URL and AIRFLOW_API_USER and AIRFLOW_API_PASS:
         try:
@@ -868,7 +925,14 @@ def reconcile_and_alert(airbyte_rows=None):
                 rr = s.get(f"{OM_URL}/api/v1/pipelines/name/{quote(AIRFLOW_SERVICE_NAME + '.' + dag_id, safe='')}",
                            verify=False, timeout=20)
                 if rr.status_code != 200:
-                    missing.append(f"Airflow DAG `{dag_id}` roda de verdade mas nao esta catalogada no OM")
+                    # DAG nao esta no OM, entao nao tem "owner" la - tenta o
+                    # autor do ultimo commit no GitLab como pista de quem
+                    # notificar, mesmo padrao usado no restante do script.
+                    hint = gitlab_last_author(dag_id)
+                    msg = f"Airflow DAG `{dag_id}` roda de verdade mas nao esta catalogada no OM"
+                    if hint:
+                        msg += f" (ultimo commit: {hint})"
+                    missing.append((f"airflow:{dag_id}", msg, hint))
         except requests.RequestException as e:
             print(f"  [reconcile] Airflow API indisponivel, pulando: {e}")
     else:
@@ -876,16 +940,34 @@ def reconcile_and_alert(airbyte_rows=None):
 
     if airbyte_rows:
         om_conn_names = _om_pipeline_names(s, "Suno AirByte")
-        real_names = {r["nome"] for r in airbyte_rows}
+        rows_by_name = {r["nome"]: r for r in airbyte_rows}
+        real_names = set(rows_by_name)
         for name in sorted(real_names - om_conn_names):
-            missing.append(f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM")
+            # airbyte hoje nao tem fonte de responsavel (ver fetch_airbyte),
+            # entao o hint fica vazio - so o usuario padrao recebe esses.
+            hint = rows_by_name[name].get("responsavel") or None
+            missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", hint))
 
-    if missing:
-        text = "⚠️ *Dashboard Suno — itens sem catalogo no OM:*\n" + "\n".join(f"• {m}" for m in missing)
-        notify_slack_dm(text)
-        print(f"  {len(missing)} item(ns) sem correspondencia no OM — Slack notificado")
+    # so alerta o que e novo desde a ultima run - item ja avisado antes (e
+    # ainda faltando) nao gera notificacao repetida toda hora. Volta a
+    # alertar se sumir da lista (corrigido) e reaparecer depois.
+    already_alerted = _load_alerted_keys()
+    new_missing = [(k, m, h) for k, m, h in missing if k not in already_alerted]
+
+    if new_missing:
+        text = "⚠️ *Dashboard Suno — itens novos sem catalogo no OM:*\n" + "\n".join(f"• {m}" for _, m, _ in new_missing)
+        notify_slack_dm(text)  # resumo completo sempre vai pro usuario padrao
+        # alem do resumo, quem tiver responsavel identificado recebe o item
+        # dele isoladamente tambem.
+        for _, msg, hint in new_missing:
+            match_id = slack_id_for_responsible(hint)
+            if match_id:
+                notify_slack_dm(f"⚠️ *Dashboard Suno:* {msg}", channel=match_id)
+        print(f"  {len(new_missing)} item(ns) NOVO(s) sem correspondencia no OM — Slack notificado")
     else:
-        print("  nada faltando — tudo catalogado")
+        print(f"  nada novo pra alertar ({len(missing)} item(ns) ja conhecido(s) continuam faltando)" if missing else "  nada faltando — tudo catalogado")
+
+    _save_alerted_keys({k for k, _, _ in missing})
 
 
 FETCHERS = {

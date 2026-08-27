@@ -47,7 +47,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/airbyte.csv data/airflow.csv data/om_ingestion_status.csv \
                   data/history_airbyte.csv data/history_airflow.csv data/history_ingestion_status.csv \
-                  data/_meta.csv
+                  data/reconcile_alerted.csv data/_meta.csv
           if git diff --staged --quiet; then
             echo "Sem mudanças, nada a commitar."
           else
