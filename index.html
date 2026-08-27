@@ -15,6 +15,13 @@
     --success: #00A000; --warning: #FFBD12; --danger: #FD0000; --skip: #A0A0A0; --brand: #D42126;
     --warning-text: #8A6200;
     --mono: 'JetBrains Mono', monospace; --sans: 'Inter', sans-serif;
+    /* categorias de origem de dado, usadas nas tags de tabela do painel Dashboards */
+    --cat-raw-bg: #FFF3E9; --cat-raw-b: #D9720A; --cat-raw-t: #8A4A06;
+    --cat-ai-bg:  #EAF7EA; --cat-ai-b:  #1C8A1C; --cat-ai-t:  #145214;
+    --cat-ref-bg: #F6EEFB; --cat-ref-b: #8032B8; --cat-ref-t: #4E1F73;
+    --cat-svc-bg: #EAF1FC; --cat-svc-b: #2158C4; --cat-svc-t: #16357C;
+    --cat-adv-bg: #FDEBEC; --cat-adv-b: #C4213A; --cat-adv-t: #7C1424;
+    --cat-env-bg: var(--surface-2); --cat-env-b: #8C8C8C; --cat-env-t: var(--text-dim);
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
@@ -153,6 +160,73 @@
   .test-mini .ok { color: var(--success); }
   .test-mini .fail { color: var(--danger); }
   .test-mini .none { color: var(--text-faint); }
+
+  /* ── Início (home) ── */
+  .home-hero { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+  .home-hero img { height: 40px; width: auto; }
+  .home-hero h1 { font-family: var(--mono); font-size: 22px; font-weight: 700; margin: 0; }
+  .home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  button.home-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; cursor: pointer; text-align: left; font-family: var(--sans); transition: border-color .15s, transform .1s, box-shadow .15s; display: flex; flex-direction: column; gap: 14px; }
+  button.home-card:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+  .home-card-head { display: flex; align-items: center; justify-content: space-between; }
+  .home-card-title { font-family: var(--mono); font-weight: 700; font-size: 14.5px; color: var(--text); display: flex; align-items: center; gap: 9px; }
+  .home-card-title svg { flex-shrink: 0; }
+  .home-card-arrow { color: var(--text-faint); font-size: 16px; transition: transform .15s, color .15s; }
+  button.home-card:hover .home-card-arrow { transform: translateX(3px); color: var(--brand); }
+  .home-card-metrics { display: flex; gap: 22px; }
+  .home-card-metrics div { display: flex; flex-direction: column; gap: 2px; }
+  .home-card-metrics .v { font-family: var(--mono); font-size: 22px; font-weight: 700; line-height: 1; }
+  .home-card-metrics .v.danger { color: var(--danger); }
+  .home-card-metrics .v.success { color: var(--success); }
+  .home-card-metrics .l { font-size: 11px; color: var(--text-dim); }
+
+  /* ── Dashboards (mapa de dependência) ── */
+  .dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .dash-card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; user-select: none; }
+  .dash-card-head:hover { background: var(--surface-2); }
+  .dash-card-name { font-family: var(--mono); font-weight: 700; font-size: 14px; }
+  .dash-card-repo { font-family: var(--mono); font-size: 10.5px; color: var(--text-dim); background: var(--surface-2); padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); }
+  .dash-card-count { font-size: 11.5px; color: var(--text-dim); margin-left: auto; }
+  .dash-card-chevron { font-size: 11px; color: var(--text-faint); transition: transform .15s; }
+  .dash-card.open .dash-card-chevron { transform: rotate(90deg); }
+  .dash-card-body { display: none; padding: 18px; }
+  .dash-card.open .dash-card-body { display: block; animation: fadein .2s ease; }
+
+  .cat-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 5px; font-family: var(--mono); font-size: 10.5px; font-weight: 500; border: 1px solid transparent; white-space: nowrap; }
+  .cat-tag.raw { background: var(--cat-raw-bg); color: var(--cat-raw-t); border-color: var(--cat-raw-b); }
+  .cat-tag.ai  { background: var(--cat-ai-bg);  color: var(--cat-ai-t);  border-color: var(--cat-ai-b); }
+  .cat-tag.ref { background: var(--cat-ref-bg); color: var(--cat-ref-t); border-color: var(--cat-ref-b); }
+  .cat-tag.svc { background: var(--cat-svc-bg); color: var(--cat-svc-t); border-color: var(--cat-svc-b); }
+  .cat-tag.adv { background: var(--cat-adv-bg); color: var(--cat-adv-t); border-color: var(--cat-adv-b); }
+  .cat-tag.env { background: var(--cat-env-bg); color: var(--cat-env-t); border-color: var(--cat-env-b); }
+
+  .lineage-wrap { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--border); }
+  .lineage-note { font-size: 11px; color: var(--text-faint); margin-bottom: 12px; font-style: italic; }
+  .lineage-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 0; }
+  .lineage-node { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); font-family: var(--mono); font-size: 11px; }
+  .lineage-node.pipeline { border-style: dashed; color: var(--text-dim); }
+  .lineage-node.table { color: var(--text); }
+  .lineage-node .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--skip); }
+  .lineage-node.alarm { border-color: var(--danger); color: var(--danger); animation: alarm-blink 1.1s ease-in-out infinite; }
+  .lineage-node.alarm .dot { background: var(--danger); }
+  .lineage-arrow { color: var(--text-faint); font-size: 13px; }
+  @keyframes alarm-blink { 0%, 100% { box-shadow: 0 0 0 0 rgba(253,0,0,.35); } 50% { box-shadow: 0 0 0 5px rgba(253,0,0,0); } }
+
+  .notified-icon { display: inline-flex; align-items: center; margin-left: 6px; cursor: default; vertical-align: middle; transition: opacity .15s, color .15s; }
+  .notified-icon svg { display: block; }
+  .notified-icon.active { color: var(--danger); animation: alarm-blink 1.3s ease-in-out infinite; }
+  .notified-icon.resolved { color: var(--text-faint); opacity: .45; }
+  .notified-icon.resolved:hover { opacity: 1; color: var(--text-dim); }
+
+  /* Filtro por BU no painel Dashboards - mesmo texto "(Nome)" em mono usado no
+     wordmark/BU do Snowflake, so que como pilula clicavel. */
+  .dash-filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 24px; }
+  button.dash-filter-pill { font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; color: var(--text-dim); transition: border-color .15s, color .15s, background .15s; }
+  button.dash-filter-pill .paren { color: var(--brand); }
+  button.dash-filter-pill:hover { border-color: var(--text-dim); color: var(--text); }
+  button.dash-filter-pill.active { border-color: var(--brand); background: var(--surface-2); color: var(--text); }
+
+  .construction-note { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--warning-text); background: #FFF8E6; border: 1px solid var(--warning); border-radius: 8px; padding: 9px 14px; margin-bottom: 22px; width: fit-content; }
 </style>
 </head>
 <body>
@@ -165,7 +239,15 @@
   <button type="button" class="brand suno-symbol-collapsed" id="sidebar-toggle-collapsed" title="Expandir menu" aria-label="Expandir menu">
     <img src="suno_symbol.png" alt="Suno">
   </button>
-  <button data-panel="airbyte" class="active">
+  <button data-panel="inicio" class="active">
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-6h4v6"/></svg>
+    <span class="label">Home</span>
+  </button>
+  <button data-panel="dashboards">
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3" height="8"/><rect x="13" y="7" width="3" height="13"/><rect x="18" y="4" width="0" height="0"/><polyline points="6 10 11 5 14.5 8.5 20 3" stroke="var(--brand)"/></svg>
+    <span class="label">Dashboards</span>
+  </button>
+  <button data-panel="airbyte">
     <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#615EFF"><path d="M8.308 2.914C10.876.027 15.128-.819 18.624.848c4.644 2.21 6.339 7.846 3.809 12.194l-5.687 9.77c-.319.547-.842.944-1.455 1.107-.613.163-1.267.079-1.818-.236l6.887-11.832c1.835-3.155.608-7.243-2.758-8.854-2.528-1.208-5.613-.604-7.482 1.473-1.031 1.139-1.608 2.613-1.628 4.145-.018 1.532.524 3.019 1.524 4.185.179.21.372.406.579.588l-4.021 6.919c-.157.273-.365.51-.617.699-.249.189-.534.329-.838.411-.303.081-.621.1-.93.061-.313-.041-.614-.143-.885-.298l4.364-7.513C7.041 12.77 6.59 11.763 6.34 10.7l-2.675 4.612c-.317.545-.842.944-1.453 1.107-.615.164-1.269.079-1.818-.237L7.31 4.284c.29-.487.622-.948.998-1.37Zm7.983 3.784c1.666.956 2.242 3.081 1.277 4.734L10.936 22.81c-.317.547-.84.945-1.455 1.109-.612.162-1.268.079-1.816-.237l6.159-10.596c-.495-.1-.96-.308-1.365-.61-.405-.3-.743-.682-.981-1.122-.242-.441-.385-.928-.418-1.428-.033-.501.045-1.002.224-1.47.18-.468.462-.893.824-1.242.362-.35.795-.618 1.273-.784.474-.168.982-.23 1.485-.183.502.046.989.2 1.425.451Zm-2.412 2.139c-.114.087-.21.196-.282.32-.106.186-.158.398-.144.613.014.215.092.42.224.592.13.167.31.297.515.367.207.068.427.077.636.02.209-.056.396-.172.54-.334.143-.161.234-.36.263-.574.027-.213-.008-.43-.105-.622-.097-.195-.246-.354-.433-.46-.126-.072-.263-.118-.406-.136-.143-.02-.286-.01-.424.026-.14.038-.271.101-.384.188Z"/></svg>
     <span class="label">Airbyte</span>
   </button>
@@ -190,7 +272,31 @@
 
 <div class="content-area">
 <main>
-  <section class="panel active" id="panel-airbyte">
+  <section class="panel active" id="panel-inicio">
+    <div class="home-hero">
+      <img src="suno_wordmark.png" alt="Suno">
+      <h1>Dados Observabilidade</h1>
+    </div>
+    <p class="panel-sub">Visão geral de todas as áreas — clique num card pra abrir a seção.</p>
+    <div class="construction-note">🚧 Página em construção — layout inicial, dados e navegação ainda serão refinados.</div>
+    <div class="home-grid" id="home-grid"></div>
+  </section>
+
+  <section class="panel" id="panel-dashboards">
+    <div class="panel-header-row">
+      <h1 class="panel-title">Dashboards</h1>
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="dashboards-search" placeholder="Buscar dashboard ou tabela...">
+      </div>
+    </div>
+    <p class="panel-sub">Dashboards de Market Share/Marketing e as tabelas Snowflake que cada um consome. Clique num dashboard pra expandir e ver a linhagem (tabela → pipeline de ingestão).</p>
+    <div class="construction-note">🚧 Página em construção — linhagem com pipelines reais do OM ainda será conectada.</div>
+    <div class="dash-filter-row" id="dashboards-filter"></div>
+    <div id="dashboards-list"></div>
+  </section>
+
+  <section class="panel" id="panel-airbyte">
     <div class="panel-header-row">
       <h1 class="panel-title">Airbyte</h1>
       <div class="search-box">
@@ -473,10 +579,38 @@ function kpiFilterTile(value, label, tone, active) {
     <div class="value">${value}</div><div class="label">${label}</div></button>`;
 }
 
-function nameCell(nome, url, failed) {
+function nameCell(nome, url, failed, notified) {
   const cls = 'name' + (failed ? ' name-failed' : '');
   const content = url ? `<a href="${url}" target="_blank" rel="noopener">${nome}</a>` : nome;
-  return `<td class="${cls}">${content}</td>`;
+  return `<td class="${cls}">${content}${notified || ''}</td>`;
+}
+
+// Icone de sino pra linha que ja gerou alerta no Slack (reconcile_alerted.csv).
+// active=true (ainda sem correspondencia/resolvido) fica vermelho e piscando;
+// depois de execucoes seguidas com sucesso vira 'resolvido' - unica diferenca
+// visual e cor apagada + sem animacao, mas o icone continua no fluxo e o
+// tooltip (title, aparece no hover) sempre explica o estado, mesmo resolvido.
+function notifiedIcon(active, tooltip) {
+  const cls = active ? 'active' : 'resolved';
+  return `<span class="notified-icon ${cls}" title="${tooltip}">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  </span>`;
+}
+
+// Estado do sino pra uma linha: consulta reconcile_alerted.csv (chave
+// "airbyte:<nome>" ou "airflow:<dag_id>") e o pulso recente (ultimas 10
+// execucoes) pra decidir se ja "resolveu" (2+ sucessos seguidos desde entao).
+function notifiedState(alertedKeys, key, pulsoStr) {
+  if (!alertedKeys.has(key)) return null;
+  const ticks = (pulsoStr || '').split('|').filter(Boolean);
+  const lastTwo = ticks.slice(-2);
+  const resolved = lastTwo.length === 2 && lastTwo.every(t => t === 'success');
+  const tooltip = resolved
+    ? 'Já foi notificado via Slack (item sem catálogo no OM) — resolvido: últimas execuções com sucesso.'
+    : 'Notificado via Slack — item roda de verdade mas não está catalogado no OM.';
+  return notifiedIcon(!resolved, tooltip);
 }
 
 function wireKpiFilters(containerId, tiles, ctrl) {
@@ -485,7 +619,8 @@ function wireKpiFilters(containerId, tiles, ctrl) {
 }
 
 async function renderAirbyte() {
-  const rows = await loadCSV('airbyte.csv');
+  const [rows, alerted] = await Promise.all([loadCSV('airbyte.csv'), loadCSV('reconcile_alerted.csv')]);
+  const alertedKeys = new Set(alerted.map(a => a.key));
   const total = rows.length;
   const active = rows.filter(r => r.status_conexao === 'active').length;
   const inactive = total - active;
@@ -504,7 +639,7 @@ async function renderAirbyte() {
     defaultSortKey: 'ultima_execucao', defaultSortDir: -1,
     renderRow: r => `
     <tr>
-      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed')}
+      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airbyte:' + r.nome, r.pulso))}
       <td style="font-size:12.5px; color:var(--text-dim);">${r.responsavel || '—'}</td>
       <td>${statusDot(r.status_conexao)}</td>
       <td><span class="badge">${r.tipo_agendamento || '—'}</span></td>
@@ -519,7 +654,8 @@ async function renderAirbyte() {
 }
 
 async function renderAirflow() {
-  const rows = await loadCSV('airflow.csv');
+  const [rows, alerted] = await Promise.all([loadCSV('airflow.csv'), loadCSV('reconcile_alerted.csv')]);
+  const alertedKeys = new Set(alerted.map(a => a.key));
   const total = rows.length;
   const ok = rows.filter(r => r.ultimo_status === 'success').length;
   const failed = rows.filter(r => r.ultimo_status === 'failed').length;
@@ -538,7 +674,7 @@ async function renderAirflow() {
     defaultSortKey: 'ultima_execucao', defaultSortDir: -1,
     renderRow: r => `
     <tr>
-      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed')}
+      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airflow:' + r.dag_id, r.pulso))}
       <td style="font-size:12.5px; color:var(--text-dim);">${r.responsavel || '—'}</td>
       <td style="font-family: var(--mono); font-size:12.5px; color:var(--text-dim);">${r.frequencia || '—'}</td>
       <td>${statusDot(r.ultimo_status)}</td>
@@ -717,6 +853,233 @@ async function renderOm() {
   document.querySelector('#om-scripts-table tbody').innerHTML = scriptRows || '<tr><td class="empty" colspan="2">Sem dados ainda.</td></tr>';
 }
 
+// ── Linhagem tabela -> pipeline(s) que a alimentam ──────────────────────────
+// Consultado ao vivo no OM (GET /api/v1/lineage/table/name/{fqn}, upstreamDepth=3)
+// em 27/ago/2026. Congelado aqui (nao e refeito automaticamente) - se o
+// lineage do OM mudar, precisa rodar de novo e colar o resultado. Array vazio
+// = OM nao tem lineage registrado pra essa tabela (gap real de rastreamento,
+// nao necessariamente ausencia de pipeline de verdade) - nao inventar pipeline
+// pra preencher, mostrar como "sem lineage" mesmo.
+const TABLE_LINEAGE = {"AI_WORKSPACE.SANDBOX.DailyMetasIndicadores":[],"AI_WORKSPACE.SANDBOX.FUNIL_SOCIAL_SELLING":[],"AI_WORKSPACE.SANDBOX.MS_VW_MIDIA_ASSET":[],"AI_WORKSPACE.SANDBOX.MS_VW_VENDAS_LIQUIDAS_COMERCIAL":[],"AI_WORKSPACE.SANDBOX.TB_MS_GOOGLE_TRENDS":[],"AI_WORKSPACE.SANDBOX.TB_MS_SOCIALBLADE_DAILY_HISTORY":[],"AI_WORKSPACE.SANDBOX.TB_MS_SOCIALBLADE_MONTHLY_HISTORY":[],"AI_WORKSPACE.SANDBOX.VW_MIDIA_PLANEJADO_VS_REALIZADO":[],"AI_WORKSPACE.SANDBOX.VW_MIDIA_PVR_V2_TEST":[],"AI_WORKSPACE.SANDBOX.VW_MIDIA_REALIZADO":[],"AI_WORKSPACE.SANDBOX.VW_VENDAS_POR_HORA_SUNOCODE_V2":[{"servico":"Suno Airflow","nome":"nai_export"},{"servico":"Suno AirByte","nome":"Supabase → Snowflake - RAW_SUNO_LEGADO - SUNO_CODE"}],"AI_WORKSPACE.SANDBOX.fSeguidores":[],"AI_WORKSPACE.SANDBOX.fYoutubeSocial":[],"RAW_MARKETING.MARKET_SHARE.TB_ANBIMA_CAPTACAO_RAW":[],"RAW_MARKETING.MARKET_SHARE.TB_ANBIMA_PL_RAW":[],"RAW_MARKETING.MARKET_SHARE.TB_APPS_EMPRESAS":[],"RAW_MARKETING.MARKET_SHARE.TB_GLASSDOOR_EMPRESAS":[],"RAW_MARKETING.MARKET_SHARE.TB_RA_EMPRESAS":[],"RAW_MARKETING.MARKET_SHARE.TB_TRAFEGO_SITES_NOTICIAS":[],"RAW_SUNO_LEGADO.OVH_FINANCIAL_SALES_PIVOT.FINANCIAL_SALES_PIVOT_28082025":[],"REFINED_ADVISORY.WEALTH_LEGADO.VW_BTG_PL_TOTAL":[{"servico":"Suno Airflow","nome":"btg_positions"}],"REFINED_ASSET.COTISTAS.DT_KPIS_COTISTAS_FUNDOS":[],"REFINED_ASSET.QUANTUM.MARKETSHARE_LIQUIDEZ_FUNDOS_ESTRUTURADOS":[],"REFINED_ASSET.QUANTUM.MARKETSHARE_PVP_FUNDOS_ESTRUTURADOS":[],"REFINED_ASSET.QUANTUM.MERCADO_FUNDOS_ESTRUTURADOS":[],"REFINED_ASSET.QUANTUM.MERCADO_FUNDOS_LIQUIDOS":[],"SERVING_LAYER.CONSULTORIA.VW_APORTE_RESGATE":[{"servico":"Suno AirByte","nome":"Supabase - Avenue → Snowflake - RAW - Avenue"},{"servico":"Suno AirByte","nome":"Google Sheets - Movimentação Consultor - Consultoria → Snowflake - RAW - MOVIMENTAÇÃO DE CONSULTOR"},{"servico":"Suno AirByte","nome":"Google Sheets - Movimentação de Consultor → Snowflake - Cadastro Consultoria"}],"SERVING_LAYER.CONSULTORIA.VW_FUNIL_CONSULTORIA":[{"servico":"Suno AirByte","nome":"Google Sheets - Cadastro Consultoria → Snowflake"}],"SERVING_LAYER.MARKETING.VW_INSTAGRAM_DAILY_SUMMARY":[{"servico":"Suno AirByte","nome":"Instagram → Snowflake - RAW_MARKETING - INSTAGRAM"}],"SERVING_LAYER.MARKETING.VW_INSTAGRAM_MIDIA_POSTS":[{"servico":"Suno AirByte","nome":"Instagram MEDIA → Snowflake - RAW_MARKETING - INSTAGRAM"}],"SERVING_LAYER.MARKETING.VW_INSTAGRAM_STORY_FACT":[{"servico":"Suno AirByte","nome":"Instagram → Snowflake - RAW_MARKETING - INSTAGRAM"}],"SERVING_LAYER.MARKETING.VW_LEADS_SUNOCODE_PBI":[{"servico":"Suno Airflow","nome":"sunocore_fim_de_semana"},{"servico":"Suno Airflow","nome":"sunocore_madrugada"},{"servico":"Suno Airflow","nome":"sunocore"},{"servico":"Suno AirByte","nome":"Google Sheets - MAGNET VS NEGÓCIO → Snowflake - RAW_MARKETING - MARKETING"},{"servico":"Suno AirByte","nome":"Google Sheets - CANAL VS LEAD → Snowflake - RAW_MARKETING - MARKETING"}],"SERVING_LAYER.MARKETING.VW_USERS_INSIGHTS":[{"servico":"Suno AirByte","nome":"Instagram → Snowflake - RAW_MARKETING - INSTAGRAM"}],"SERVING_LAYER.MARKET_SHARE.VW_YT_MARKET_SHARE_DAILY":[{"servico":"Suno Airflow","nome":"youtube_daily_snapshot"}],"SERVING_LAYER.MARKET_SHARE.VW_YT_MARKET_SHARE_MONTHLY":[{"servico":"Suno Airflow","nome":"youtube_daily_snapshot"}],"SERVING_LAYER.MARKET_SHARE.VW_YT_TRENDING_FINANCE_BR":[{"servico":"Suno Airflow","nome":"youtube_daily_snapshot"}],"SERVING_LAYER.MARKET_SHARE.VW_YT_VIDEO_RECENT":[{"servico":"Suno Airflow","nome":"youtube_daily_snapshot"}],"SERVING_LAYER.MARKET_SHARE.VW_YT_VIDEO_TOP_VIEWED":[{"servico":"Suno Airflow","nome":"youtube_daily_snapshot"}],"SERVING_LAYER.YOUTUBE.INSCRITOS_CANAL_HISTORICO":[],"SERVING_LAYER.YOUTUBE.INSCRITOS_CANAL_POR_MES":[],"SERVING_LAYER.YOUTUBE.VIDEOS_METRICS_INFO":[{"servico":"Suno Airflow","nome":"youtube_video"}]};
+
+// ── Dashboards (mapa dashboard -> tabelas Snowflake) ────────────────────────
+// Fonte: levantamento manual repassado por Thales (27/ago/2026) cruzado com
+// snowflake_dashboards.html do projeto marketshare-dashboard. category usada
+// so pra colorir a tag (raw/ai/ref/svc/adv/env), bate com a camada do dado.
+const DASHBOARD_DATA = [
+  { nome: 'Hora a Hora', repo: 'suno-Hora-Hora-dashboard', categorias: ['MARKETING', 'ASSINATURAS'], tabelas: [
+    ['via env','via env','VW_VENDAS_POR_HORA_SUNOCODE','env'],
+    ['via env','via env','METAS_RECEITA','env'],
+  ]},
+  { nome: 'Leads Dashboard', repo: 'suno-leads-dashboard', categorias: ['MARKETING', 'ASSINATURAS'], tabelas: [
+    ['SERVING_LAYER','MARKETING','VW_LEADS_SUNOCODE_PBI','svc'],
+  ]},
+  { nome: 'BTG PL', repo: 'btg-pl', categorias: ['CONSULTORIA'], tabelas: [
+    ['REFINED_ADVISORY','WEALTH_LEGADO','VW_BTG_PL_TOTAL','ref'],
+  ]},
+  { nome: 'Aquisição', repo: 'dash-aquisicao', categorias: ['CONSULTORIA'], tabelas: [
+    ['SERVING_LAYER','CONSULTORIA','VW_FUNIL_CONSULTORIA','svc'],
+  ]},
+  { nome: 'Aporte e Resgate', repo: 'dash-aporte-resgate', categorias: ['CONSULTORIA'], tabelas: [
+    ['SERVING_LAYER','CONSULTORIA','VW_APORTE_RESGATE','svc'],
+  ]},
+  { nome: 'SNEL11 UFVs', repo: 'asset-snel11-ufvs-dashboard', categorias: ['ASSET'], tabelas: [] },
+  { nome: 'Marketshare Dashboard v2', repo: 'marketshare-dashboard-v2', categorias: ['MARKETING'], tabelas: [
+    ['RAW_MARKETING','MARKET_SHARE','TB_TRAFEGO_SITES_NOTICIAS','raw'],
+    ['RAW_MARKETING','MARKET_SHARE','TB_ANBIMA_PL_RAW','raw'],
+    ['RAW_MARKETING','MARKET_SHARE','TB_ANBIMA_CAPTACAO_RAW','raw'],
+    ['RAW_MARKETING','MARKET_SHARE','TB_APPS_EMPRESAS','raw'],
+    ['RAW_MARKETING','MARKET_SHARE','TB_RA_EMPRESAS','raw'],
+    ['RAW_MARKETING','MARKET_SHARE','TB_GLASSDOOR_EMPRESAS','raw'],
+    ['AI_WORKSPACE','SANDBOX','TB_MS_GOOGLE_TRENDS','ai'],
+    ['AI_WORKSPACE','SANDBOX','MS_VW_MIDIA_ASSET','ai'],
+    ['AI_WORKSPACE','SANDBOX','VW_MIDIA_PLANEJADO_VS_REALIZADO','ai'],
+    ['AI_WORKSPACE','SANDBOX','VW_MIDIA_REALIZADO','ai'],
+    ['AI_WORKSPACE','SANDBOX','MS_VW_VENDAS_LIQUIDAS_COMERCIAL','ai'],
+    ['AI_WORKSPACE','SANDBOX','VW_VENDAS_POR_HORA_SUNOCODE_V2','ai'],
+    ['REFINED_ASSET','QUANTUM','MARKETSHARE_LIQUIDEZ_FUNDOS_ESTRUTURADOS','ref'],
+    ['REFINED_ASSET','QUANTUM','MARKETSHARE_PVP_FUNDOS_ESTRUTURADOS','ref'],
+    ['REFINED_ASSET','QUANTUM','MERCADO_FUNDOS_LIQUIDOS','ref'],
+    ['REFINED_ASSET','QUANTUM','MERCADO_FUNDOS_ESTRUTURADOS','ref'],
+    ['REFINED_ASSET','COTISTAS','DT_KPIS_COTISTAS_FUNDOS','ref'],
+    ['SERVING_LAYER','MARKET_SHARE','VW_YT_MARKET_SHARE_MONTHLY','svc'],
+    ['SERVING_LAYER','MARKET_SHARE','VW_YT_MARKET_SHARE_DAILY','svc'],
+    ['SERVING_LAYER','MARKET_SHARE','VW_YT_VIDEO_RECENT','svc'],
+    ['SERVING_LAYER','MARKET_SHARE','VW_YT_VIDEO_TOP_VIEWED','svc'],
+    ['SERVING_LAYER','MARKET_SHARE','VW_YT_TRENDING_FINANCE_BR','svc'],
+    ['SERVING_LAYER','YOUTUBE','INSCRITOS_CANAL_HISTORICO','svc'],
+    ['SERVING_LAYER','YOUTUBE','INSCRITOS_CANAL_POR_MES','svc'],
+    ['SERVING_LAYER','YOUTUBE','VIDEOS_METRICS_INFO','svc'],
+  ]},
+  { nome: 'MVP Social', repo: 'MVP-Social', categorias: ['MARKETING'], tabelas: [
+    ['AI_WORKSPACE','SANDBOX','FUNIL_SOCIAL_SELLING','ai'],
+    ['AI_WORKSPACE','SANDBOX','fYoutubeSocial','ai'],
+    ['AI_WORKSPACE','SANDBOX','fSeguidores','ai'],
+    ['AI_WORKSPACE','SANDBOX','DailyMetasIndicadores','ai'],
+    ['AI_WORKSPACE','SANDBOX','TB_MS_SOCIALBLADE_DAILY_HISTORY','ai'],
+    ['AI_WORKSPACE','SANDBOX','TB_MS_SOCIALBLADE_MONTHLY_HISTORY','ai'],
+    ['SERVING_LAYER','YOUTUBE','VIDEOS_METRICS_INFO','svc'],
+    ['SERVING_LAYER','YOUTUBE','INSCRITOS_CANAL_HISTORICO','svc'],
+    ['SERVING_LAYER','MARKETING','VW_INSTAGRAM_DAILY_SUMMARY','svc'],
+    ['SERVING_LAYER','MARKETING','VW_INSTAGRAM_MIDIA_POSTS','svc'],
+    ['SERVING_LAYER','MARKETING','VW_INSTAGRAM_STORY_FACT','svc'],
+    ['SERVING_LAYER','MARKETING','VW_USERS_INSIGHTS','svc'],
+    ['RAW_SUNO_LEGADO','OVH_FINANCIAL_SALES_PIVOT','FINANCIAL_SALES_PIVOT_28082025','raw'],
+  ]},
+  { nome: 'Marketing — Gestão Orçamento', repo: 'Marketing---Gestao-Orcamento', categorias: ['MARKETING'], tabelas: [
+    ['AI_WORKSPACE','SANDBOX','VW_MIDIA_PVR_V2_TEST','ai'],
+    ['AI_WORKSPACE','SANDBOX','VW_MIDIA_REALIZADO','ai'],
+  ]},
+];
+
+const AIRFLOW_ICON_SMALL = `<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#017CEE"><path d="M17.195 16.822l4.002-4.102C23.55 10.308 23.934 5.154 24 .43a.396.396 0 0 0-.246-.373.392.392 0 0 0-.437.09l-6.495 6.658-4.102-4.003C10.309.45 5.154.066.43 0H.423a.397.397 0 0 0-.277.683l6.658 6.494-4.003 4.103C.45 13.692.065 18.846 0 23.57a.398.398 0 0 0 .683.282l6.494-6.657 3.934 3.837.17.165c2.41 2.353 7.565 2.737 12.288 2.803h.006a.397.397 0 0 0 .277-.683l-6.657-6.495z"/></svg>`;
+const AIRBYTE_ICON_SMALL = `<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#615EFF"><path d="M8.308 2.914C10.876.027 15.128-.819 18.624.848c4.644 2.21 6.339 7.846 3.809 12.194l-5.687 9.77c-.319.547-.842.944-1.455 1.107-.613.163-1.267.079-1.818-.236l6.887-11.832c1.835-3.155.608-7.243-2.758-8.854-2.528-1.208-5.613-.604-7.482 1.473-1.031 1.139-1.608 2.613-1.628 4.145-.018 1.532.524 3.019 1.524 4.185.179.21.372.406.579.588l-4.021 6.919c-.157.273-.365.51-.617.699-.249.189-.534.329-.838.411-.303.081-.621.1-.93.061-.313-.041-.614-.143-.885-.298l4.364-7.513C7.041 12.77 6.59 11.763 6.34 10.7l-2.675 4.612c-.317.545-.842.944-1.453 1.107-.615.164-1.269.079-1.818-.237L7.31 4.284c.29-.487.622-.948.998-1.37Z"/></svg>`;
+const SNOWFLAKE_ICON_SMALL = `<svg width="11" height="11" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#29B5E8"><path d="M24 3.459c0 .646-.418 1.18-1.141 1.18-.723 0-1.142-.534-1.142-1.18 0-.647.419-1.18 1.142-1.18.723 0 1.141.533 1.141 1.18zM7.602 12.4c.038-.151.076-.304.076-.456 0-.114-.038-.228-.038-.342-.114-.343-.304-.647-.646-.838l-4.87-2.777c-.685-.38-1.56-.152-1.94.533-.381.685-.153 1.56.532 1.94l2.701 1.56-2.701 1.56c-.685.38-.913 1.256-.533 1.94.38.685 1.256.914 1.94.533l4.832-2.777c.343-.267.571-.533.647-.876zm1.332 2.626c-.266-.038-.57.038-.837.19l-4.832 2.777c-.685.38-.913 1.256-.532 1.94.38.686 1.255.914 1.94.533l2.701-1.56v3.12c0 .8.647 1.408 1.446 1.408.799 0 1.407-.647 1.407-1.408v-5.592c0-.761-.57-1.37-1.293-1.408zm4.946-6.088c.266.038.57-.038.837-.19l4.832-2.777c.685-.38.913-1.256.532-1.94-.38-.686-1.255-.914-1.94-.533l-2.701 1.56V1.975c0-.799-.647-1.408-1.446-1.408-.799 0-1.446.609-1.446 1.408V7.53c0 .76.609 1.37 1.332 1.407zM3.265 5.97l4.832 2.777c.266.152.533.19.837.19.723-.038 1.331-.684 1.331-1.407V1.975c0-.799-.646-1.408-1.407-1.408-.799 0-1.446.647-1.446 1.408v3.12l-2.701-1.56c-.685-.38-1.56-.152-1.94.533-.419.646-.19 1.521.494 1.902zm9.093 6.011a.412.412 0 00-.114-.266l-.57-.571a.346.346 0 00-.267-.114.412.412 0 00-.266.114l-.571.57a.411.411 0 00-.114.267c0 .076.038.19.114.267l.57.57a.345.345 0 00.267.114c.076 0 .19-.038.266-.114l.571-.57a.412.412 0 00.114-.267zm1.598.533L11.94 14.53c-.039.038-.153.114-.229.114h-.608a.411.411 0 01-.267-.114L8.82 12.514a.408.408 0 01-.076-.229v-.608c0-.076.038-.19.114-.267l2.016-2.016a.41.41 0 01.267-.114h.608a.41.41 0 01.267.114l2.016 2.016a.347.347 0 01.114.267v.608c-.076.077-.114.19-.19.229zm5.593 5.44l-4.832-2.777c-.266-.152-.57-.19-.837-.152-.723.038-1.332.684-1.332 1.408v5.554c0 .8.647 1.408 1.408 1.408.799 0 1.446-.647 1.446-1.408v-3.12l2.7 1.56c.686.38 1.561.152 1.941-.533.419-.646.19-1.521-.494-1.94zm2.549-7.533l-2.701 1.56 2.7 1.56c.686.38.914 1.256.533 1.94-.38.685-1.255.913-1.94.533l-4.832-2.778a1.644 1.644 0 01-.647-.798c-.037-.153-.076-.305-.076-.457 0-.114.039-.228.039-.342.114-.343.342-.647.646-.837l4.832-2.778c.685-.38 1.56-.152 1.94.533.457.609.19 1.484-.494 1.864"/></svg>`;
+const GSHEETS_ICON_SMALL = `<svg width="11" height="11" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#0F9D58" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path fill="#87CEAC" d="M14 2v6h6z"/><path fill="#fff" d="M8 13h8v1.4H8zm0 2.6h8V17H8zm0-5.2h8v1.4H8z"/></svg>`;
+
+// Status real do pipeline, cruzando com os dados que os paineis Airflow/Airbyte
+// ja carregam (dag_id/nome + ultimo_status). So icone do servico + bolinha de
+// status - sem texto, pra nao poluir a linha (nome completo vai no title).
+function pipelineStatusNode(p, airflowByDagId, airbyteByName) {
+  const isAirflow = p.servico === 'Suno Airflow';
+  const icon = isAirflow ? AIRFLOW_ICON_SMALL : AIRBYTE_ICON_SMALL;
+  const row = isAirflow ? airflowByDagId[p.nome] : airbyteByName[p.nome];
+  const status = row?.ultimo_status;
+  const dotColor = status === 'success' ? 'var(--success)' : status === 'failed' ? 'var(--danger)' : 'var(--skip)';
+  const statusLabel = status ? (STATUS_LABEL[status] || status) : 'sem status (não achado na tela de status)';
+  const nomeAttr = p.nome.replace(/"/g, '&quot;');
+  const panel = isAirflow ? 'airflow' : 'airbyte';
+  return `<span class="lineage-node pipeline pipeline-link" style="cursor:pointer;" data-panel="${panel}" data-nome="${nomeAttr}" title="${p.servico} — ${p.nome} — ${statusLabel} (clique pra abrir)">${icon}<span class="dot" style="background:${dotColor};"></span></span>`;
+}
+
+function dashChartIcon() {
+  return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3" height="8"/><rect x="13" y="7" width="3" height="13"/></svg>`;
+}
+
+async function renderDashboards() {
+  const [airflowRows, airbyteRows] = await Promise.all([loadCSV('airflow.csv'), loadCSV('airbyte.csv')]);
+  const airflowByDagId = {}; airflowRows.forEach(r => { if (r.dag_id) airflowByDagId[r.dag_id] = r; });
+  const airbyteByName = {}; airbyteRows.forEach(r => { airbyteByName[r.nome] = r; });
+
+  const html = DASHBOARD_DATA.map((d, i) => {
+    const tags = d.tabelas.map(([db, schema, tabela, cat]) =>
+      `<span class="cat-tag ${cat}" title="${db}.${schema}.${tabela}">${SNOWFLAKE_ICON_SMALL}${tabela}</span>`).join('');
+    const lineageRows = d.tabelas.map(([db, schema, tabela]) => {
+      const pipes = TABLE_LINEAGE[`${db}.${schema}.${tabela}`] || [];
+      const pipeNodes = pipes.length
+        ? pipes.map(p => pipelineStatusNode(p, airflowByDagId, airbyteByName)).join('')
+        : `<span class="lineage-node pipeline" style="opacity:.5; font-style:italic;" title="OM não tem esse rastreamento registrado — não necessariamente ausência de pipeline real.">sem lineage no OM</span>`;
+      return `<div class="lineage-row">
+        <span class="lineage-node table">${SNOWFLAKE_ICON_SMALL}${tabela}</span>
+        <span class="lineage-arrow">←</span>
+        ${pipeNodes}
+      </div>`;
+    }).join('');
+    const body = d.tabelas.length ? `
+      <div class="dash-card-body">
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">${tags}</div>
+        <div class="lineage-wrap">
+          <div class="lineage-note">Linhagem tabela → pipeline, consultada ao vivo no OM (27/ago/2026). "sem lineage no OM" = OM não tem esse rastreamento registrado — não necessariamente ausência de pipeline real. Nó com contorno vermelho piscando = alarme (pipeline falhando/atrasado).</div>
+          ${lineageRows}
+        </div>
+      </div>` : `<div class="dash-card-body"><span class="no-snow" style="display:inline-flex; align-items:center; gap:6px; color:var(--text-faint); font-size:12px; font-style:italic;">${GSHEETS_ICON_SMALL} Não usa Snowflake — fonte: Google Sheets</span></div>`;
+    return `
+    <div class="dash-card" id="dash-card-${i}" data-cat="${(d.categorias || []).join(',')}">
+      <div class="dash-card-head" onclick="document.getElementById('dash-card-${i}').classList.toggle('open')">
+        ${dashChartIcon()}
+        <span class="dash-card-name">${d.nome}</span>
+        <span class="dash-card-repo">${d.repo}</span>
+        <span class="dash-card-count">${d.tabelas.length} tabela(s)</span>
+        <span class="dash-card-chevron">▶</span>
+      </div>
+      ${body}
+    </div>`;
+  }).join('');
+  document.getElementById('dashboards-list').innerHTML = html;
+
+  // Filtro por categoria - mesmo estilo de texto "(Nome)" do wordmark/BU do
+  // Snowflake, so que como pilula. "( Suno )" primeiro = limpa o filtro.
+  const categorias = [...new Set(DASHBOARD_DATA.flatMap(d => d.categorias || []))];
+  let activeCategory = null;
+  const pill = (label, cat) => `<button type="button" class="dash-filter-pill ${cat === activeCategory ? 'active' : ''}" data-cat="${cat ?? ''}"><span class="paren">(</span>${label}<span class="paren">)</span></button>`;
+  function renderFilterPills() {
+    document.getElementById('dashboards-filter').innerHTML =
+      pill('Suno', null) + categorias.map(c => pill(BU_LABEL[c] || c, c)).join('');
+    document.querySelectorAll('#dashboards-filter .dash-filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => { activeCategory = btn.dataset.cat || null; renderFilterPills(); applyFilters(); });
+    });
+  }
+  renderFilterPills();
+
+  function applyFilters() {
+    const q = document.getElementById('dashboards-search').value.trim().toLowerCase();
+    DASHBOARD_DATA.forEach((d, i) => {
+      const hay = (d.nome + ' ' + d.tabelas.map(t => t.join(' ')).join(' ')).toLowerCase();
+      const card = document.getElementById(`dash-card-${i}`);
+      const matchesSearch = !q || hay.includes(q);
+      const matchesCategory = !activeCategory || (d.categorias || []).includes(activeCategory);
+      const match = matchesSearch && matchesCategory;
+      card.style.display = match ? '' : 'none';
+      if (q && match) card.classList.add('open');
+    });
+  }
+  document.getElementById('dashboards-search').addEventListener('input', applyFilters);
+
+  // Clique no icone do pipeline leva pro painel Airflow/Airbyte, ja filtrado
+  // pela busca existente naquele painel (reaproveita o search em vez de
+  // duplicar logica de destaque de linha).
+  document.querySelectorAll('.pipeline-link').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation(); // nao deixa o clique tambem fechar/abrir o card do dashboard
+      const panel = el.dataset.panel;
+      const nome = el.dataset.nome;
+      document.querySelector(`[data-panel="${panel}"]`).click();
+      const searchInput = document.getElementById(`${panel}-search`);
+      searchInput.value = nome;
+      searchInput.dispatchEvent(new Event('input'));
+    });
+  });
+}
+
+async function renderInicio() {
+  const sections = [
+    { panel: 'dashboards', title: 'Dashboards', icon: dashChartIcon(), metric: [DASHBOARD_DATA.length, 'dashboards mapeados'] },
+    { panel: 'airbyte', title: 'Airbyte', icon: `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#615EFF"><path d="M8.308 2.914C10.876.027 15.128-.819 18.624.848c4.644 2.21 6.339 7.846 3.809 12.194l-5.687 9.77c-.319.547-.842.944-1.455 1.107-.613.163-1.267.079-1.818-.236l6.887-11.832c1.835-3.155.608-7.243-2.758-8.854-2.528-1.208-5.613-.604-7.482 1.473-1.031 1.139-1.608 2.613-1.628 4.145-.018 1.532.524 3.019 1.524 4.185.179.21.372.406.579.588l-4.021 6.919c-.157.273-.365.51-.617.699-.249.189-.534.329-.838.411-.303.081-.621.1-.93.061-.313-.041-.614-.143-.885-.298l4.364-7.513C7.041 12.77 6.59 11.763 6.34 10.7l-2.675 4.612c-.317.545-.842.944-1.453 1.107-.615.164-1.269.079-1.818-.237L7.31 4.284c.29-.487.622-.948.998-1.37Z"/></svg>`, csv: 'airbyte.csv' },
+    { panel: 'airflow', title: 'Airflow', icon: `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#017CEE"><path d="M17.195 16.822l4.002-4.102C23.55 10.308 23.934 5.154 24 .43a.396.396 0 0 0-.246-.373.392.392 0 0 0-.437.09l-6.495 6.658-4.102-4.003C10.309.45 5.154.066.43 0H.423a.397.397 0 0 0-.277.683l6.658 6.494-4.003 4.103C.45 13.692.065 18.846 0 23.57a.398.398 0 0 0 .683.282l6.494-6.657 3.934 3.837.17.165c2.41 2.353 7.565 2.737 12.288 2.803h.006a.397.397 0 0 0 .277-.683l-6.657-6.495z"/></svg>`, csv: 'airflow.csv' },
+    { panel: 'snowflake', title: 'Snowflake', icon: `<svg width="15" height="15" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#29B5E8"><circle cx="12" cy="12" r="10"/></svg>`, csv: 'snowflake_catalogo.csv' },
+    { panel: 'om', title: 'OpenMetadata', icon: `<svg width="15" height="15" viewBox="0 0 53 64" xmlns="http://www.w3.org/2000/svg"><path d="M0.000834935 13L0 50.6583C0.113913 58.0366 11.9352 64 26.5 64C41.0648 64 52.8852 58.0366 52.9991 50.6583L53 13C52.8861 20.3784 41.0648 26.3418 26.5 26.3418C11.9352 26.3418 0.114748 20.3784 0.000834935 13Z" fill="#8D6AF1"/></svg>`, csv: 'om_agentes.csv' },
+  ];
+
+  const rowsByCsv = {};
+  await Promise.all(sections.filter(s => s.csv).map(async s => { rowsByCsv[s.csv] = await loadCSV(s.csv); }));
+
+  const cardsHtml = sections.map(s => {
+    let metricA = ['—', 'itens'], metricB = null;
+    if (s.metric) {
+      metricA = s.metric;
+    } else if (s.csv) {
+      const rows = rowsByCsv[s.csv] || [];
+      const failField = rows.some(r => 'ultimo_status' in r) ? 'ultimo_status' : null;
+      const total = rows.length;
+      const fails = failField ? rows.filter(r => r[failField] === 'failed').length : 0;
+      metricA = [total || '—', 'itens'];
+      metricB = failField ? [fails, 'com falha'] : null;
+    }
+    return `
+    <button type="button" class="home-card" onclick="document.querySelector('[data-panel=\\'${s.panel}\\']').click()">
+      <div class="home-card-head">
+        <span class="home-card-title">${s.icon} ${s.title}</span>
+        <span class="home-card-arrow">→</span>
+      </div>
+      <div class="home-card-metrics">
+        <div><span class="v">${metricA[0]}</span><span class="l">${metricA[1]}</span></div>
+        ${metricB ? `<div><span class="v ${metricB[0] > 0 ? 'danger' : 'success'}">${metricB[0]}</span><span class="l">${metricB[1]}</span></div>` : ''}
+      </div>
+    </button>`;
+  }).join('');
+  document.getElementById('home-grid').innerHTML = cardsHtml;
+}
+
 document.querySelectorAll('nav.sidebar button[data-panel]').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('nav.sidebar button[data-panel]').forEach(b => b.classList.remove('active'));
@@ -737,7 +1100,8 @@ document.getElementById('sidebar-toggle').addEventListener('click', toggleSideba
 document.getElementById('sidebar-toggle-collapsed').addEventListener('click', toggleSidebar);
 
 (async () => {
-  await Promise.all([renderAirbyte(), renderAirflow(), renderSnowflake(), renderOm(), renderUpdated()]);
+  await Promise.all([renderAirbyte(), renderAirflow(), renderSnowflake(), renderOm(), renderUpdated(), renderDashboards()]);
+  await renderInicio(); // depende dos CSVs (airbyte/airflow/etc) ja carregados nas linhas acima
 })();
 </script>
 

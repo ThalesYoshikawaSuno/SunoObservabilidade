@@ -539,7 +539,7 @@ def airflow_frequencia(schedule_interval):
     return AIRFLOW_PRESET_PT.get(schedule_interval, schedule_interval)
 
 
-AIRFLOW_FIELDS = ["id", "nome", "responsavel", "frequencia", "ultimo_status", "ultima_execucao",
+AIRFLOW_FIELDS = ["id", "nome", "dag_id", "responsavel", "frequencia", "ultimo_status", "ultima_execucao",
                    "taxa_sucesso_pct", "execucoes_amostra", "pulso", "pulso_datas", "url"]
 
 
@@ -578,6 +578,7 @@ def fetch_airflow_status():
         rows.append({
             "id": p.get("id"),
             "nome": name,
+            "dag_id": dag_id,
             "ultimo_status": STATUS_TO_PULSE.get(latest_status, "sem_execucao"),
             "ultima_execucao": datetime.fromtimestamp(latest["timestamp"] / 1000, tz=timezone.utc).isoformat() if latest.get("timestamp") else "",
             "taxa_sucesso_pct": success_rate,
