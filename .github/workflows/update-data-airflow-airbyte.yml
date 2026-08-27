@@ -50,8 +50,26 @@ jobs:
                   data/reconcile_alerted.csv data/_meta.csv
           if git diff --staged --quiet; then
             echo "Sem mudanças, nada a commitar."
-          else
-            git commit -m "Atualiza status de Airflow/Airbyte [skip ci]"
-            git pull --rebase
-            git push
+            exit 0
           fi
+          git commit -m "Atualiza status de Airflow/Airbyte [skip ci]"
+          # Esses CSVs sao reescritos por inteiro a cada run (nao e append) -
+          # se outro workflow (ou essa mesma run disparada em paralelo) commitou
+          # entre o checkout e agora, um "git pull --rebase" comum da conflito
+          # de texto linha a linha, porque as duas versoes divergem quase
+          # inteiras. Como o conteudo e 100% gerado (nunca editado a mao), o
+          # snapshot mais recente sempre pode vencer sem perda real - por isso
+          # "-X ours" no rebase (mantem nosso commit recem-gerado em caso de
+          # conflito) com retry, em vez de exigir merge manual.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "Push ok na tentativa $i."
+              exit 0
+            fi
+            echo "Push falhou (tentativa $i), buscando atualizacoes e tentando de novo..."
+            git fetch origin main
+            git rebase -X ours origin/main
+            sleep $(( (RANDOM % 8) + 2 ))
+          done
+          echo "Nao foi possivel commitar apos 5 tentativas."
+          exit 1

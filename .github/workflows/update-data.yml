@@ -44,5 +44,19 @@ jobs:
             exit 0
           fi
           git commit -m "Atualiza dados semanais do dashboard [skip ci]"
-          git pull --rebase
-          git push
+          # Mesmo cuidado do workflow horario: esses CSVs sao reescritos por
+          # inteiro a cada run, entao um rebase comum da conflito de texto se
+          # outro workflow commitou nesse meio tempo. Conteudo e 100% gerado,
+          # entao "-X ours" (nosso snapshot recem-gerado vence) com retry.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "Push ok na tentativa $i."
+              exit 0
+            fi
+            echo "Push falhou (tentativa $i), buscando atualizacoes e tentando de novo..."
+            git fetch origin main
+            git rebase -X ours origin/main
+            sleep $(( (RANDOM % 8) + 2 ))
+          done
+          echo "Nao foi possivel commitar apos 5 tentativas."
+          exit 1
