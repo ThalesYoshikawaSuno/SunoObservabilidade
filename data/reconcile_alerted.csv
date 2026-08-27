@@ -1,0 +1,101 @@
+key
+airbyte:AAI - PG_SI_APP - SNOW_RAW_STATUS_INVEST
+airbyte:ASSETS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:Amazon SQS - SUBSCRIBER_EVENTS → S3 - SQS - CSV
+airbyte:BASE - PG_SI_APP_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:BDRS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:BONDS - PG_SI_APP_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:BigQuery → Snowflake - RAW_MARKETING - GA4
+airbyte:CONSULTORIA - AuC Assessoria → Snowflake - Cadastro Consultoria
+airbyte:CRYPTOCOINS - PG_SI_APP_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:CURRENCY - PG_SI_APP_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:ETF - PG_SUNO_APP_READER - SNOW_RAW_SUNO_LEGADO
+airbyte:FIAGRO - PG_SI_APP_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:FIIS - PG_SUNO_SI_APP_READER - SNOW_RAW_SUNO_LEGADO
+airbyte:FUNDOSINVESTIMENTOS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:Facebook Marketing - Suno Research → Snowflake - MIDIAS_PAGAS
+airbyte:Google Ads → Snowflake - RAW_MARKETING - GOOGLE_ADS
+airbyte:Google Sheets - ASSET_LISTA_CRIS → Snowflake - RAW_SUNO_LEGADO - ASSET
+airbyte:Google Sheets - AuC Consultoria Historica → Snowflake - RAW_SUNO_LEGADO - CONSULTORIA
+airbyte:Google Sheets - BASE METAS MARKETING CAMPANHAS SETEMBRO → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - BASES CS4 - Acompanhamento Produção Emissão → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - BASE_METAS MARKETING → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - BI Cotação USD → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - BI METAS → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - BI QTD_ASSESSORES → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - Bases XP - Ajuste → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - Bases XP SEGUROS → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - CANAL VS LEAD → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - COMUNIDADE_VIVA_DIVIDENDOS_CONTATOS → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - Cadastro Consultoria → Snowflake
+airbyte:Google Sheets - Clientes Consultoria → Snowflake - RAW_SUNO_LEGADO - CONSULTORIA
+airbyte:Google Sheets - DE_PARA_PRODUCTS_HOTMART → Snowflake - RAW_SUNO_LEGADO - HOTMART
+airbyte:Google Sheets - Equipe → Snowflake RAW_SUNO_LEGADO - ASSESSORIA
+airbyte:Google Sheets - Fundos e Pares → Snowflake - RAW_MARKETING - MIDIAS
+airbyte:Google Sheets - INSTAGRAM_VISAO_SEMANAL → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - LEADS_FUNIL_SUBFUNIL_DE_PARA → Snowflake - RAW_MARKETING - LEADS
+airbyte:Google Sheets - LEAD_MAGNETS_TRACKING → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - MAGNET VS NEGÓCIO → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - META ANIVERSARIO 2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - METAS_DIA_CANAL_ACAO → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - META_LEADS → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - Movimentação Consultor - Consultoria → Snowflake - RAW - MOVIMENTAÇÃO DE CONSULTOR
+airbyte:Google Sheets - Movimentação de Consultor → Snowflake - Cadastro Consultoria
+airbyte:Google Sheets - PEERS_FUNDS_SUNO → Snowflake - RAW_SUNO_LEGADO - ASSET
+airbyte:Google Sheets - POWER_AUTOMATE → Snowflake - RAW_SUNO_LEGADO - SUNO
+airbyte:Google Sheets - PVP_QUANTUM → Snowflake - RAW_SUNO_LEGADO - ASSET
+airbyte:Google Sheets - SALDOS_BTG_XP → Snowflake - RAW_SUNO_LEGADO - ASSET
+airbyte:Google Sheets - SUNOCODE 03/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - SUNOCODE 04/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - SUNOCODE 05/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - SUNOCODE 07/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - SUNOCODE 11/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - SUNOCODE ALWAYS ON → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - Sunocode 01/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - Sunocode 02/2025 → Snowflake - RAW_MARKETING - MARKETING
+airbyte:Google Sheets - Tasks Time Dados → Snowflake - DEV TIME DADOS
+airbyte:Google Sheets - WEALTH → Snowflake - WEALTH
+airbyte:Google Sheets - WEALTH_AUM_XP_US → Snowflake - RAW_SUNO_LEGADO - WEALTH
+airbyte:Google Sheets → Snowflake - RAW_MARKETING - MARKETING
+airbyte:HISTORY - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:HOURLY UPDATE - Salesforce → Snowflake - RAW_SALESFORCE - Salesforce
+airbyte:HubSpot → Snowflake - RAW_MARKETING_CRM
+airbyte:INDEXERS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:INDICES - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:INTEGRATION - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:Instagram MEDIA → Snowflake - RAW_MARKETING - INSTAGRAM
+airbyte:Instagram → Snowflake - RAW_MARKETING - INSTAGRAM
+airbyte:MEMBROS_WP -  PG_SUNO - SNOW_RAW_SUNO_LEGADO
+airbyte:Monday - CONSULTORIA STVM → Snowflake - CONSULTORIA MONDAY
+airbyte:OPTIONS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:PAYMENTS - PG_SUNO - SNOW_RAW_SUNO_LEGADO
+airbyte:Postgres - SUNO CORE DEV → Snowflake RAW_SUNO_CORE_DEV
+airbyte:Postgres - SUNO CORE PROD Daily → Snowflake - RAW_SUNO_CORE  - SUNO_CORE_PROD
+airbyte:Postgres - SUNO CORE PROD → Snowflake - RAW_SUNO_CORE  - SUNO_CORE_PROD
+airbyte:Postgres - SUNO CORE PROD → Snowflake - STG_SUNO_CORE  - SUNO_CORE_STG
+airbyte:Postgres - SUNO MINUTO → Snowflake RAW SUNO_LEGADO
+airbyte:Postgres - Status Invest - CONSOLIDATIONHISTORY→ Snowflake - RAW STATUS_INVEST
+airbyte:Postgres - Status Invest - Wallet Reader → Snowflake - RAW STATUS_INVEST
+airbyte:Postgres - datahub → Snowflake - RAW_SUNO_LEGADO - HOTMART
+airbyte:Postgres PROJ IA → Snowflake RAW_SUNO_LEGADO.PROJ_IA_WA_RS
+airbyte:Postgres SUNO app_api PHONE_VALIDATION → Snowflake RAW SUNO_LEGADO
+airbyte:Postgres SUNO app_api → Snowflake RAW SUNO_LEGADO
+airbyte:SALES - PG_SI_APP - SNOW_RAW_STATUS_INVEST
+airbyte:SECTORS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:SECURITY - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:SQL Server - NEXXUS - SUNO → Snowflake RAW.NEXXUS
+airbyte:SQS - suno-analytics → Snowflake RAW SUNO_LEGADO
+airbyte:STATISTICS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:STOCKS - PG_SI_APP_READER - SNOW_RAW_STATUS_INVEST
+airbyte:SUNO - SQL_SERVER_NEXXUS_SUNO - SNOW_RAW_SUNO_LEGADO_NEXXUS
+airbyte:SUNO_NOTICIAS_WP - MYSQL_SUNO - SNOW_RAW_SUNO_LEGADO
+airbyte:SUNO_OMS - SQL_SERVER_NEXXUS_SUNO_OMS - SNOW_RAW_SUNO_LEGADO_NEXXUS
+airbyte:Salesforce → Snowflake - RAW_SALESFORCE - Salesforce
+airbyte:Snowflake-SERVING_LAYER-MARKETING → Supabase - Production
+airbyte:Supabase → Snowflake - RAW_SUNO_LEGADO - SUNO_CODE
+airbyte:Twilio Taskrouter → Snowflake RAW_SUNO_LEGADO.PROJ_IA_WA_RS
+airbyte:WALLET - PG_SI_WALLET_READER POSITIONBROKER → SNOW_RAW_STATUS_INVEST
+airbyte:WALLET - PG_SI_WALLET_READER→ SNOW_RAW_STATUS_INVEST
+airbyte:WALLETSTATISTICS - PG_SI_WALLET_READER DAILYSTATISTICS→ SNOW_RAW_STATUS_INVEST
+airbyte:WALLETSTATISTICS - PG_SI_WALLET_READER GENERALSTATISTICS→ SNOW_RAW_STATUS_INVEST
+airbyte:YouTube Analytics - Baroni → Snowflake - RAW_MARKETING - YOUTUBE
