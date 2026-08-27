@@ -32,6 +32,7 @@ jobs:
           # Opcionais - se nao configurados nos Secrets do repo, o script pula
           # a notificacao/reconciliacao correspondente sem quebrar a run.
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_USER_ID: ${{ secrets.SLACK_USER_ID }}
           SLACK_USER_EMAIL: ${{ secrets.SLACK_USER_EMAIL }}
           AIRFLOW_API_URL: ${{ secrets.AIRFLOW_API_URL }}
           AIRFLOW_API_USER: ${{ secrets.AIRFLOW_API_USER }}

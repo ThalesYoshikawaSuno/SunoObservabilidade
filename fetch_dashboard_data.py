@@ -14,7 +14,10 @@ Variáveis de ambiente (mesmas do .env.om já usado nos outros scripts):
   OM_URL, OM_TOKEN
   AIRFLOW_SERVICE_NAME (default "Suno Airflow")
   SNOWFLAKE_SERVICE_NAME (default "Suno SnowFlake")
-  SLACK_TOKEN, SLACK_USER_EMAIL (opcional — alerta de reconciliacao)
+  SLACK_TOKEN, SLACK_USER_ID (opcional — alerta de reconciliacao; SLACK_USER_ID
+    e o member id direto, ex. U0AM30R1FU6, evita depender do scope
+    users:read.email que o bot nao tem hoje. SLACK_USER_EMAIL e so fallback
+    se SLACK_USER_ID nao estiver setado)
   AIRFLOW_API_URL, AIRFLOW_API_USER, AIRFLOW_API_PASS (opcional — reconciliacao Airflow)
   CF_ACCESS_AIRFLOW_CLIENT_ID, CF_ACCESS_AIRFLOW_CLIENT_SECRET (opcional — Cloudflare
     Access do Airflow, app separado do Airbyte, so precisa se AIRFLOW_API_URL estiver setado)
@@ -66,6 +69,9 @@ GITLAB_BRANCH  = os.environ.get("GITLAB_BRANCH", "master")
 # setado, notify_slack_dm() so loga no console e nao quebra a run.
 SLACK_TOKEN      = os.environ.get("SLACK_TOKEN", "")
 SLACK_USER_EMAIL = os.environ.get("SLACK_USER_EMAIL", "thales.yoshikawa@suno.com.br")
+# Se setado, pula o lookup por e-mail (users.lookupByEmail exige o scope
+# users:read.email, que o bot atual nao tem) e manda direto pra esse member id.
+SLACK_USER_ID    = os.environ.get("SLACK_USER_ID", "")
 
 # Credenciais diretas da API do Airflow (opcional, so usada pela reconciliacao
 # pra comparar DAGs reais vs. catalogadas no OM). Sem elas, reconcile_and_alert()
@@ -178,6 +184,8 @@ _SLACK_USER_ID = None
 
 def _slack_user_id():
     global _SLACK_USER_ID
+    if SLACK_USER_ID:
+        return SLACK_USER_ID
     if _SLACK_USER_ID is None and SLACK_TOKEN:
         try:
             r = requests.get("https://slack.com/api/users.lookupByEmail",
