@@ -2,7 +2,11 @@
 """
 Coleta dados de Airbyte, Airflow (via OpenMetadata) e Snowflake (via OpenMetadata)
 e grava em data/*.csv — consumidos pelo dashboard estático (index.html).
-Roda semanalmente via GitHub Actions.
+
+Duas cadencias via GitHub Actions, controladas por --only:
+  - Hora em hora (6h-20h): airbyte, airflow_status, ingestion_status, reconcile
+    (tudo que muda com frequencia - status/pulso/saude das ingestoes nativas).
+  - Semanal: airflow_info, snowflake, om (dono, frequencia, catalogo - muda pouco).
 
 Variáveis de ambiente (mesmas do .env.om já usado nos outros scripts):
   AIRBYTE_URL, AIRBYTE_CLIENT_ID, AIRBYTE_CLIENT_SECRET
@@ -10,6 +14,10 @@ Variáveis de ambiente (mesmas do .env.om já usado nos outros scripts):
   OM_URL, OM_TOKEN
   AIRFLOW_SERVICE_NAME (default "Suno Airflow")
   SNOWFLAKE_SERVICE_NAME (default "Suno SnowFlake")
+  SLACK_TOKEN, SLACK_USER_EMAIL (opcional — alerta de reconciliacao)
+  AIRFLOW_API_URL, AIRFLOW_API_USER, AIRFLOW_API_PASS (opcional — reconciliacao Airflow)
+  CF_ACCESS_AIRFLOW_CLIENT_ID, CF_ACCESS_AIRFLOW_CLIENT_SECRET (opcional — Cloudflare
+    Access do Airflow, app separado do Airbyte, so precisa se AIRFLOW_API_URL estiver setado)
 """
 
 import os
@@ -53,6 +61,23 @@ GITLAB_TOKEN   = os.environ.get("GITLAB_TOKEN", "")
 GITLAB_PROJECT = os.environ.get("GITLAB_PROJECT", "suno-research/data-team/suno-airflow-dags")
 GITLAB_BRANCH  = os.environ.get("GITLAB_BRANCH", "master")
 
+# Slack (alerta de reconciliacao — DAG/ingestion real que nao aparece no OM).
+# Token do mesmo bot ja usado em airbyte_report.py no servidor. Sem SLACK_TOKEN
+# setado, notify_slack_dm() so loga no console e nao quebra a run.
+SLACK_TOKEN      = os.environ.get("SLACK_TOKEN", "")
+SLACK_USER_EMAIL = os.environ.get("SLACK_USER_EMAIL", "thales.yoshikawa@suno.com.br")
+
+# Credenciais diretas da API do Airflow (opcional, so usada pela reconciliacao
+# pra comparar DAGs reais vs. catalogadas no OM). Sem elas, reconcile_and_alert()
+# pula a checagem do lado Airflow sem quebrar a run.
+AIRFLOW_API_URL  = os.environ.get("AIRFLOW_API_URL", "")
+AIRFLOW_API_USER = os.environ.get("AIRFLOW_API_USER", "")
+AIRFLOW_API_PASS = os.environ.get("AIRFLOW_API_PASS", "")
+# Cloudflare Access do Airflow e um app separado do Airbyte (CF_ACCESS_CLIENT_ID/
+# SECRET acima) - service token diferente, nao reaproveitar.
+CF_ACCESS_AIRFLOW_ID     = os.environ.get("CF_ACCESS_AIRFLOW_CLIENT_ID", "")
+CF_ACCESS_AIRFLOW_SECRET = os.environ.get("CF_ACCESS_AIRFLOW_CLIENT_SECRET", "")
+
 PULSE_SAMPLES = 10  # últimas N execuções mostradas na faixa de pulso
 
 AIRBYTE_HEADERS = {
@@ -85,6 +110,106 @@ def write_meta():
         w = csv.writer(f)
         w.writerow(["gerado_em"])
         w.writerow([datetime.now(timezone.utc).isoformat()])
+
+
+# ── Merge incremental (status de hora em hora + info semanal no mesmo CSV) ──
+# O dashboard le um unico arquivo por painel (airflow.csv/airbyte.csv) com
+# TODAS as colunas. Pra rodar status a cada hora e info (dono, frequencia)
+# so 1x/semana sem duas fontes divergentes, cada fetch so atualiza as colunas
+# que le, preservando o resto do que ja estava gravado.
+
+def read_csv_as_dict(name, key="id"):
+    path = os.path.join(OUT_DIR, name)
+    if not os.path.exists(path):
+        return {}
+    with open(path, newline="", encoding="utf-8") as f:
+        return {row[key]: row for row in csv.DictReader(f) if row.get(key)}
+
+
+def merge_write_csv(name, fieldnames, key, updates):
+    """updates: dict {id: {campo: valor, ...}} com so os campos que essa run
+    calculou. Campos ausentes de uma linha ja existente ficam como estavam."""
+    existing = read_csv_as_dict(name, key)
+    for uid, patch in updates.items():
+        row = existing.setdefault(uid, {f: "" for f in fieldnames})
+        row.update(patch)
+        row[key] = uid
+    write_csv(name, fieldnames, list(existing.values()))
+
+
+# ── Historico incremental (append-only, so grava execucao nova) ─────────────
+# O OM nao guarda historico longo de status de pipeline de forma confiavel
+# (endpoint de status por periodo se mostrou instavel/limitado na pratica).
+# Pra ter tendencia real (duracao recente vs. historica), o proprio dashboard
+# passa a acumular isso a partir de agora, 1 linha por (id, timestamp de execucao).
+
+def append_history(name, rows, key_fields=("id", "ultima_execucao")):
+    path = os.path.join(OUT_DIR, name)
+    fieldnames = ["id", "nome", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct", "coletado_em"]
+    seen = set()
+    if os.path.exists(path):
+        with open(path, newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                seen.add(tuple(row.get(k, "") for k in key_fields))
+    new_rows = []
+    for r in rows:
+        k = tuple(str(r.get(k, "")) for k in key_fields)
+        if k in seen or not r.get("ultima_execucao"):
+            continue
+        seen.add(k)
+        new_rows.append({**{f: r.get(f, "") for f in fieldnames}, "coletado_em": datetime.now(timezone.utc).isoformat()})
+    if not new_rows:
+        print(f"  {name}: nenhuma execucao nova")
+        return
+    write_header = not os.path.exists(path)
+    with open(path, "a", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        if write_header:
+            w.writeheader()
+        for r in new_rows:
+            w.writerow(r)
+    print(f"  {name}: +{len(new_rows)} execucoes novas")
+
+
+# ── Slack (alerta de reconciliacao) ──────────────────────────────────────────
+
+_SLACK_USER_ID = None
+
+
+def _slack_user_id():
+    global _SLACK_USER_ID
+    if _SLACK_USER_ID is None and SLACK_TOKEN:
+        try:
+            r = requests.get("https://slack.com/api/users.lookupByEmail",
+                              headers={"Authorization": f"Bearer {SLACK_TOKEN}"},
+                              params={"email": SLACK_USER_EMAIL}, timeout=15)
+            d = r.json()
+            _SLACK_USER_ID = d.get("user", {}).get("id", "") if d.get("ok") else ""
+            if not d.get("ok"):
+                print(f"  [slack] lookupByEmail falhou: {d.get('error')}")
+        except requests.RequestException as e:
+            print(f"  [slack] lookupByEmail erro: {e}")
+            _SLACK_USER_ID = ""
+    return _SLACK_USER_ID or ""
+
+
+def notify_slack_dm(text):
+    if not SLACK_TOKEN:
+        print(f"  [slack] (SLACK_TOKEN nao setado, so log) {text}")
+        return
+    uid = _slack_user_id()
+    if not uid:
+        print(f"  [slack] usuario nao resolvido, so log: {text}")
+        return
+    try:
+        r = requests.post("https://slack.com/api/chat.postMessage",
+                           headers={"Authorization": f"Bearer {SLACK_TOKEN}"},
+                           json={"channel": uid, "text": text}, timeout=15)
+        d = r.json()
+        if not d.get("ok"):
+            print(f"  [slack] postMessage falhou: {d.get('error')}")
+    except requests.RequestException as e:
+        print(f"  [slack] postMessage erro: {e}")
 
 
 # ── Classificação por BU ────────────────────────────────────────────────────
@@ -191,7 +316,15 @@ def airbyte_frequencia(schedule):
     return ""
 
 
+AIRBYTE_FIELDS = ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "frequencia",
+                   "ultimo_status", "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra",
+                   "pulso", "pulso_datas", "url"]
+
+
 def fetch_airbyte():
+    """Status + info da conexao Airbyte. Roda de hora em hora (nao ha custo
+    extra relevante em separar - as chamadas ja fazem tudo numa mesma leva,
+    diferente do Airflow, onde a checagem de dono via GitLab pesa)."""
     print("Coletando Airbyte...")
     token = airbyte_token()
     s = requests.Session()
@@ -253,10 +386,9 @@ def fetch_airbyte():
             "url": url,
         })
 
-    write_csv("airbyte.csv",
-              ["id", "nome", "responsavel", "status_conexao", "tipo_agendamento", "frequencia", "ultimo_status",
-               "ultima_execucao", "taxa_sucesso_pct", "execucoes_amostra", "pulso", "pulso_datas", "url"],
-              rows)
+    merge_write_csv("airbyte.csv", AIRBYTE_FIELDS, "id", {r["id"]: r for r in rows})
+    append_history("history_airbyte.csv", rows)
+    return rows
 
 
 # ── GitLab (autor do ultimo commit do arquivo da DAG, fallback quando o OM
@@ -358,33 +490,30 @@ def airflow_frequencia(schedule_interval):
     return AIRFLOW_PRESET_PT.get(schedule_interval, schedule_interval)
 
 
-def fetch_airflow():
-    print("Coletando Airflow (via OpenMetadata)...")
+AIRFLOW_FIELDS = ["id", "nome", "responsavel", "frequencia", "ultimo_status", "ultima_execucao",
+                   "taxa_sucesso_pct", "execucoes_amostra", "pulso", "pulso_datas", "url"]
+
+
+def _om_airflow_pipelines(s, fields):
+    return om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": fields, "limit": 100})
+
+
+def fetch_airflow_status():
+    """So status/pulso - roda de hora em hora. Nao busca owners/extension/
+    scheduleInterval (isso e fetch_airflow_info(), semanal) - evita reformatar
+    dono/frequencia a toa a cada hora quando esse dado quase nunca muda."""
+    print("Coletando Airflow — status (via OpenMetadata)...")
     s = om_session()
-    pipelines = om_get_all(s, "pipelines", {"service": AIRFLOW_SERVICE_NAME, "fields": "pipelineStatus,owners,extension,scheduleInterval", "limit": 100})
+    pipelines = _om_airflow_pipelines(s, "pipelineStatus")
 
     rows = []
     for p in pipelines:
         name = p.get("displayName") or p.get("name")
-        dag_id = p.get("name")  # identificador cru = dag_id real no Airflow (name != displayName)
+        dag_id = p.get("name")
         fqn = p.get("fullyQualifiedName")
         latest = p.get("pipelineStatus") or {}
         latest_status = latest.get("executionStatus", "sem_execucao")
         url = f"{AIRFLOW_PUBLIC_URL}/dags/{quote(dag_id, safe='')}/grid" if dag_id else ""
-        # Owner (time) vem do script airflow_lineage.py (le default_args do codigo
-        # via GitLab) - so existe quando o autor da DAG de fato setou 'owner' no
-        # codigo, cobertura parcial (~50%). Quando falta, usa o autor do ultimo
-        # commit do arquivo no GitLab (pessoa, nao time), ja calculado 1x/dia pelo
-        # cron do airflow_lineage.py no servidor e guardado em extension.gitlabLastAuthor -
-        # le daqui em vez de bater na API do GitLab a cada 2h (167 DAGs x 12x/dia
-        # seria peso desnecessario). So cai pra chamada ao vivo se o servidor ainda
-        # nao rodou pra essa DAG (extension vazia).
-        owners = p.get("owners") or []
-        responsavel = ", ".join(o.get("displayName") or o.get("name", "") for o in owners) or ""
-        if not responsavel:
-            cached = (p.get("extension") or {}).get("gitlabLastAuthor") or ""
-            autor = cached.split(" <")[0] if cached else gitlab_last_author(dag_id)
-            responsavel = f"{autor} (GitLab)" if autor else ""
 
         history = om_pipeline_status_history(s, fqn, PULSE_SAMPLES)
         pulse = [STATUS_TO_PULSE.get(h.get("executionStatus"), "unknown") for h in history]
@@ -400,8 +529,6 @@ def fetch_airflow():
         rows.append({
             "id": p.get("id"),
             "nome": name,
-            "responsavel": responsavel,
-            "frequencia": airflow_frequencia(p.get("scheduleInterval")),
             "ultimo_status": STATUS_TO_PULSE.get(latest_status, "sem_execucao"),
             "ultima_execucao": datetime.fromtimestamp(latest["timestamp"] / 1000, tz=timezone.utc).isoformat() if latest.get("timestamp") else "",
             "taxa_sucesso_pct": success_rate,
@@ -411,10 +538,37 @@ def fetch_airflow():
             "url": url,
         })
 
-    write_csv("airflow.csv",
-              ["id", "nome", "responsavel", "frequencia", "ultimo_status", "ultima_execucao", "taxa_sucesso_pct",
-               "execucoes_amostra", "pulso", "pulso_datas", "url"],
-              rows)
+    merge_write_csv("airflow.csv", AIRFLOW_FIELDS, "id", {r["id"]: r for r in rows})
+    append_history("history_airflow.csv", rows)
+    return pipelines
+
+
+def fetch_airflow_info():
+    """Dono + frequencia - roda 1x/semana. E aqui que mora o fallback ao vivo
+    pro GitLab (caro, 1 chamada por DAG sem owner/cache) - cadencia semanal
+    mantem isso raro."""
+    print("Coletando Airflow — info (dono/frequencia, via OpenMetadata)...")
+    s = om_session()
+    pipelines = _om_airflow_pipelines(s, "owners,extension,scheduleInterval")
+
+    updates = {}
+    for p in pipelines:
+        dag_id = p.get("name")
+        name = p.get("displayName") or dag_id
+        url = f"{AIRFLOW_PUBLIC_URL}/dags/{quote(dag_id, safe='')}/grid" if dag_id else ""
+        owners = p.get("owners") or []
+        responsavel = ", ".join(o.get("displayName") or o.get("name", "") for o in owners) or ""
+        if not responsavel:
+            cached = (p.get("extension") or {}).get("gitlabLastAuthor") or ""
+            autor = cached.split(" <")[0] if cached else gitlab_last_author(dag_id)
+            responsavel = f"{autor} (GitLab)" if autor else ""
+        updates[p.get("id")] = {
+            "nome": name, "url": url,
+            "responsavel": responsavel,
+            "frequencia": airflow_frequencia(p.get("scheduleInterval")),
+        }
+
+    merge_write_csv("airflow.csv", AIRFLOW_FIELDS, "id", updates)
 
 
 # ── OpenMetadata (Snowflake + BU) ────────────────────────────────────────────
@@ -627,9 +781,110 @@ def write_scripts_csv():
     write_csv("om_scripts.csv", ["nome", "agendamento", "descricao"], SERVER_SCRIPTS)
 
 
+# ── Saude das ingestoes nativas do OM (os agentes que escaneiam Airflow/
+# Airbyte/Snowflake em si, nao os DAGs/conexoes individuais) ────────────────
+# Motivo de existir: os scans nativos do Airflow/Airbyte estavam levando horas
+# em vez de minutos (bug conhecido do OM 1.13.x com Airflow 3.x embutido -
+# PR open-metadata/OpenMetadata#32005, ainda sem backport pra 1.13 em 27/ago/2026).
+# Essa secao da visibilidade rapida (hora em hora) sem precisar entrar no
+# servidor - so leitura de status, nao dispara nenhum scan de verdade.
+
+INGESTION_HEALTH_SERVICES = [AIRFLOW_SERVICE_NAME, "Suno AirByte"]
+
+
+def fetch_ingestion_status():
+    print("Coletando status das ingestoes nativas do OM (Airflow/Airbyte)...")
+    s = om_session()
+    rows = []
+    for service_name in INGESTION_HEALTH_SERVICES:
+        pipelines = om_get_all(s, "services/ingestionPipelines", {
+            "service": service_name, "pipelineType": "metadata", "fields": "pipelineStatuses", "limit": 100,
+        })
+        for p in pipelines:
+            statuses = p.get("pipelineStatuses") or []
+            if isinstance(statuses, dict):
+                statuses = [statuses]
+            statuses = sorted(statuses, key=lambda x: x.get("startDate", 0))
+            last = statuses[-1] if statuses else {}
+            start, end = last.get("startDate"), last.get("endDate")
+            dur_min = round((end - start) / 1000 / 60, 1) if start and end else ""
+            rows.append({
+                "id": p.get("id"),
+                "nome": p.get("displayName") or p.get("name"),
+                "servico": service_name,
+                "ultimo_status": last.get("pipelineState", "sem_execucao"),
+                "ultima_execucao": datetime.fromtimestamp(start / 1000, tz=timezone.utc).isoformat() if start else "",
+                "duracao_min": dur_min,
+                "cron": (p.get("airflowConfig") or {}).get("scheduleInterval", ""),
+            })
+    write_csv("om_ingestion_status.csv",
+              ["id", "nome", "servico", "ultimo_status", "ultima_execucao", "duracao_min", "cron"], rows)
+    append_history("history_ingestion_status.csv", [
+        {"id": r["id"], "nome": r["nome"], "ultimo_status": r["ultimo_status"],
+         "ultima_execucao": r["ultima_execucao"], "taxa_sucesso_pct": ""} for r in rows
+    ])
+
+
+# ── Reconciliacao: DAG/conexao real sem correspondente catalogado no OM ─────
+# So roda se as credenciais opcionais estiverem setadas (AIRFLOW_API_* pro
+# lado Airflow). Lado Airbyte reaproveita a lista real que fetch_airbyte() ja
+# buscou - sem chamada extra.
+
+def _om_pipeline_names(s, service_name):
+    pipelines = om_get_all(s, "pipelines", {"service": service_name, "limit": 100})
+    return {p.get("name") for p in pipelines if p.get("name")}
+
+
+def reconcile_and_alert(airbyte_rows=None):
+    print("Reconciliando DAGs/conexoes reais vs. catalogadas no OM...")
+    s = om_session()
+    missing = []
+
+    if AIRFLOW_API_URL and AIRFLOW_API_USER and AIRFLOW_API_PASS:
+        try:
+            # AIRFLOW_API_URL costuma ser a URL publica, atras de Cloudflare Access
+            # - sem o header CF-Access-Client-Id/Secret a chamada nem chega no
+            # Airflow, o Cloudflare barra antes com 403. App do Airflow no
+            # Cloudflare Access e separado do Airbyte, token diferente.
+            headers = {}
+            if CF_ACCESS_AIRFLOW_ID:
+                headers["CF-Access-Client-Id"] = CF_ACCESS_AIRFLOW_ID
+                headers["CF-Access-Client-Secret"] = CF_ACCESS_AIRFLOW_SECRET
+            r = requests.get(f"{AIRFLOW_API_URL}/api/v1/dags", auth=(AIRFLOW_API_USER, AIRFLOW_API_PASS),
+                              headers=headers, params={"limit": 1000}, verify=False, timeout=60)
+            real_dag_ids = {d["dag_id"] for d in r.json().get("dags", [])}
+            om_dag_ids = _om_pipeline_names(s, AIRFLOW_SERVICE_NAME)
+            for dag_id in sorted(real_dag_ids - om_dag_ids):
+                # checagem pontual (pode ser paginacao/atraso de indexacao, nao
+                # necessariamente ausencia real) antes de declarar "faltando".
+                rr = s.get(f"{OM_URL}/api/v1/pipelines/name/{quote(AIRFLOW_SERVICE_NAME + '.' + dag_id, safe='')}",
+                           verify=False, timeout=20)
+                if rr.status_code != 200:
+                    missing.append(f"Airflow DAG `{dag_id}` roda de verdade mas nao esta catalogada no OM")
+        except requests.RequestException as e:
+            print(f"  [reconcile] Airflow API indisponivel, pulando: {e}")
+    else:
+        print("  [reconcile] AIRFLOW_API_URL/USER/PASS nao setados, pulando lado Airflow")
+
+    if airbyte_rows:
+        om_conn_names = _om_pipeline_names(s, "Suno AirByte")
+        real_names = {r["nome"] for r in airbyte_rows}
+        for name in sorted(real_names - om_conn_names):
+            missing.append(f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM")
+
+    if missing:
+        text = "⚠️ *Dashboard Suno — itens sem catalogo no OM:*\n" + "\n".join(f"• {m}" for m in missing)
+        notify_slack_dm(text)
+        print(f"  {len(missing)} item(ns) sem correspondencia no OM — Slack notificado")
+    else:
+        print("  nada faltando — tudo catalogado")
+
+
 FETCHERS = {
-    "airbyte": fetch_airbyte,
-    "airflow": fetch_airflow,
+    "airbyte": fetch_airbyte,             # status+info Airbyte, hora em hora
+    "airflow_status": fetch_airflow_status,  # status Airflow, hora em hora
+    "airflow_info": fetch_airflow_info,      # dono/frequencia Airflow, semanal
+    "ingestion_status": fetch_ingestion_status,  # saude das ingestoes nativas do OM, hora em hora
     "snowflake": fetch_snowflake,
     "om": fetch_om_overview,
 }
@@ -640,17 +895,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--only", default="",
-        help="Lista separada por virgula: airbyte,airflow,snowflake,om. "
-             "Vazio = roda tudo (comportamento padrao, usado no job semanal).",
+        help="Lista separada por virgula: airbyte,airflow_status,airflow_info,"
+             "ingestion_status,snowflake,om,reconcile. "
+             "Vazio = roda tudo (comportamento padrao).",
     )
     args = parser.parse_args()
-    only = [s.strip() for s in args.only.split(",") if s.strip()] or list(FETCHERS)
+    only = [s.strip() for s in args.only.split(",") if s.strip()] or list(FETCHERS) + ["reconcile"]
 
     print("=" * 65)
     print(f"Coletando dados do dashboard — Suno ({', '.join(only)})")
     print("=" * 65)
+    airbyte_rows = None
     for key in only:
-        FETCHERS[key]()
+        if key == "reconcile":
+            continue  # roda por ultimo, depois de airbyte pra reaproveitar os dados
+        result = FETCHERS[key]()
+        if key == "airbyte":
+            airbyte_rows = result
+    if "reconcile" in only:
+        reconcile_and_alert(airbyte_rows)
     if "om" in only:
         write_scripts_csv()
     write_meta()

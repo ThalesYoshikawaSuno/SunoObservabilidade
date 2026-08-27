@@ -28,9 +28,11 @@ jobs:
           OM_URL: ${{ secrets.OM_URL }}
           OM_TOKEN: ${{ secrets.OM_TOKEN }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        # airbyte/airflow ficaram de fora daqui - agora atualizam a cada 2h via
-        # update-data-airflow-airbyte.yml, esse job semanal so cobre o resto.
-        run: python3 fetch_dashboard_data.py --only snowflake,om
+        # status de airbyte/airflow ficou de fora daqui - atualiza de hora em
+        # hora via update-data-airflow-airbyte.yml. Esse job semanal cobre o
+        # que muda pouco: dono/frequencia do Airflow (airflow_info), Snowflake
+        # e o resto do catalogo do OM.
+        run: python3 fetch_dashboard_data.py --only airflow_info,snowflake,om
 
       - name: Commitar dados atualizados
         run: |

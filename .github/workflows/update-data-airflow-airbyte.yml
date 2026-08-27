@@ -1,9 +1,9 @@
-name: Atualizar Airflow/Airbyte (a cada 2h, 6h-20h BRT)
+name: Atualizar status Airflow/Airbyte (a cada hora, 6h-20h BRT)
 
 on:
   schedule:
-    # 6,8,10,12,14,16,18,20h BRT = 9,11,13,15,17,19,21,23h UTC (BRT = UTC-3)
-    - cron: "0 9,11,13,15,17,19,21,23 * * *"
+    # 6h-20h BRT = 9h-23h UTC (BRT = UTC-3), de hora em hora.
+    - cron: "0 9-23 * * *"
   workflow_dispatch: {}
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - name: Instalar dependências
         run: pip install requests
 
-      - name: Coletar dados (Airbyte + Airflow)
+      - name: Coletar status (Airbyte + Airflow + saúde das ingestões nativas do OM)
         env:
           AIRBYTE_URL: ${{ secrets.AIRBYTE_URL }}
           AIRBYTE_CLIENT_ID: ${{ secrets.AIRBYTE_CLIENT_ID }}
@@ -29,17 +29,28 @@ jobs:
           OM_URL: ${{ secrets.OM_URL }}
           OM_TOKEN: ${{ secrets.OM_TOKEN }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        run: python3 fetch_dashboard_data.py --only airbyte,airflow
+          # Opcionais - se nao configurados nos Secrets do repo, o script pula
+          # a notificacao/reconciliacao correspondente sem quebrar a run.
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_USER_EMAIL: ${{ secrets.SLACK_USER_EMAIL }}
+          AIRFLOW_API_URL: ${{ secrets.AIRFLOW_API_URL }}
+          AIRFLOW_API_USER: ${{ secrets.AIRFLOW_API_USER }}
+          AIRFLOW_API_PASS: ${{ secrets.AIRFLOW_API_PASS }}
+          CF_ACCESS_AIRFLOW_CLIENT_ID: ${{ secrets.CF_ACCESS_AIRFLOW_CLIENT_ID }}
+          CF_ACCESS_AIRFLOW_CLIENT_SECRET: ${{ secrets.CF_ACCESS_AIRFLOW_CLIENT_SECRET }}
+        run: python3 fetch_dashboard_data.py --only airbyte,airflow_status,ingestion_status,reconcile
 
       - name: Commitar dados atualizados
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/airbyte.csv data/airflow.csv data/_meta.csv
+          git add data/airbyte.csv data/airflow.csv data/om_ingestion_status.csv \
+                  data/history_airbyte.csv data/history_airflow.csv data/history_ingestion_status.csv \
+                  data/_meta.csv
           if git diff --staged --quiet; then
             echo "Sem mudanças, nada a commitar."
           else
-            git commit -m "Atualiza dados de Airflow/Airbyte [skip ci]"
+            git commit -m "Atualiza status de Airflow/Airbyte [skip ci]"
             git pull --rebase
             git push
           fi
