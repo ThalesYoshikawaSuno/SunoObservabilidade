@@ -1,12 +1,15 @@
-name: Atualizar status Airflow/Airbyte (a cada hora, 6h-20h BRT)
+name: Atualizar status Airflow/Airbyte (a cada hora)
 
 on:
   schedule:
-    # 6h-20h BRT = 9h-23h UTC (BRT = UTC-3), de hora em hora, no minuto 17
-    # (nao no minuto 0) - no minuto 0 de cada hora o GitHub recebe o disparo
-    # de schedule de uma fracao enorme dos workflows do mundo inteiro ao
-    # mesmo tempo, e atrasa/derruba execucoes com mais frequencia nesse pico.
-    - cron: "17 9-23 * * *"
+    # De hora em hora, 24h/dia (sem restringir 9h-23h UTC) - teste pra ver se
+    # o range de horas ("9-23") era parte do motivo do agendador do GitHub
+    # nao disparar direito (0/15 horarios batidos no dia 27/ago inteiro,
+    # mesmo depois de já ter mudado o minuto de 0 pra 17). Minuto 17 mantido
+    # (evita o pico global de schedules no minuto 0). Se isso nao resolver,
+    # a saida e um cron externo (no nosso servidor) chamando a API de
+    # dispatch do GitHub, que nao depende do agendador interno deles.
+    - cron: "17 * * * *"
   workflow_dispatch: {}
 
 jobs:
