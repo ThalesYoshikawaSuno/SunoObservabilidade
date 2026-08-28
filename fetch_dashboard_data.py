@@ -307,6 +307,28 @@ def classify_bu(*parts):
     return "A REVISAR"
 
 
+# ── Roteamento de notificacao por BU (reconciliacao Airbyte) ────────────────
+# Alem do usuario padrao (que SEMPRE recebe tudo), quem mais recebe conforme a
+# BU da conexao. Atualizar aqui se o time/dono por BU mudar.
+BU_SLACK_MAP = {
+    "CONSULTORIA": ["U09MGLPK615"],  # Andre Camacho
+    "ASSET":       ["U09RGBPF7AS"],  # Cedric
+    "ASSINATURAS": ["U09RA5XRE90"],  # Giovanni
+    "RESEARCH":    ["U09RA5XRE90"],  # Giovanni
+    "MARKETING":   ["U09RA5XRE90"],  # Giovanni
+}
+
+
+def slack_ids_for_airbyte_connection(name):
+    """Excecao explicita pro Salesforce (Andre + Paulo) checada ANTES da
+    classificacao por BU - "sales" e uma das palavras-chave de RESEARCH, e
+    "salesforce" contem esse substring, entao cairia em RESEARCH por engano
+    se a BU fosse checada primeiro."""
+    if "salesforce" in (name or "").lower():
+        return ["U09MGLPK615", "U09TUHARWQ4"]  # Andre Camacho + Paulo Sousa
+    return BU_SLACK_MAP.get(classify_bu(name), [])
+
+
 # ── Airbyte ──────────────────────────────────────────────────────────────────
 
 def airbyte_token():
@@ -933,7 +955,8 @@ def reconcile_and_alert(airbyte_rows=None):
                     msg = f"Airflow DAG `{dag_id}` roda de verdade mas nao esta catalogada no OM"
                     if hint:
                         msg += f" (ultimo commit: {hint})"
-                    missing.append((f"airflow:{dag_id}", msg, hint))
+                    routed = [slack_id_for_responsible(hint)] if slack_id_for_responsible(hint) else []
+                    missing.append((f"airflow:{dag_id}", msg, routed))
         except requests.RequestException as e:
             print(f"  [reconcile] Airflow API indisponivel, pulando: {e}")
     else:
@@ -944,10 +967,10 @@ def reconcile_and_alert(airbyte_rows=None):
         rows_by_name = {r["nome"]: r for r in airbyte_rows}
         real_names = set(rows_by_name)
         for name in sorted(real_names - om_conn_names):
-            # airbyte hoje nao tem fonte de responsavel (ver fetch_airbyte),
-            # entao o hint fica vazio - so o usuario padrao recebe esses.
-            hint = rows_by_name[name].get("responsavel") or None
-            missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", hint))
+            # airbyte nao tem "responsavel" no dado real - roteamento aqui e
+            # por BU da conexao (classify_bu), com excecao pro Salesforce.
+            routed = slack_ids_for_airbyte_connection(name)
+            missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", routed))
 
     # so alerta o que e novo desde a ultima run - item ja avisado antes (e
     # ainda faltando) nao gera notificacao repetida toda hora. Volta a
@@ -958,12 +981,11 @@ def reconcile_and_alert(airbyte_rows=None):
     if new_missing:
         text = "⚠️ *Dashboard Suno — itens novos sem catalogo no OM:*\n" + "\n".join(f"• {m}" for _, m, _ in new_missing)
         notify_slack_dm(text)  # resumo completo sempre vai pro usuario padrao
-        # alem do resumo, quem tiver responsavel identificado recebe o item
-        # dele isoladamente tambem.
-        for _, msg, hint in new_missing:
-            match_id = slack_id_for_responsible(hint)
-            if match_id:
-                notify_slack_dm(f"⚠️ *Dashboard Suno:* {msg}", channel=match_id)
+        # alem do resumo, quem estiver roteado (por BU ou responsavel
+        # identificado) recebe o item dele isoladamente tambem.
+        for _, msg, routed_ids in new_missing:
+            for sid in routed_ids:
+                notify_slack_dm(f"⚠️ *Dashboard Suno:* {msg}", channel=sid)
         print(f"  {len(new_missing)} item(ns) NOVO(s) sem correspondencia no OM — Slack notificado")
     else:
         print(f"  nada novo pra alertar ({len(missing)} item(ns) ja conhecido(s) continuam faltando)" if missing else "  nada faltando — tudo catalogado")
