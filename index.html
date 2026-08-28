@@ -212,11 +212,8 @@
   .lineage-arrow { color: var(--text-faint); font-size: 13px; }
   @keyframes alarm-blink { 0%, 100% { box-shadow: 0 0 0 0 rgba(253,0,0,.35); } 50% { box-shadow: 0 0 0 5px rgba(253,0,0,0); } }
 
-  .notified-icon { display: inline-flex; align-items: center; margin-left: 6px; cursor: default; vertical-align: middle; transition: opacity .15s, color .15s; }
+  .notified-icon { display: inline-flex; align-items: center; margin-left: 6px; cursor: default; vertical-align: middle; color: var(--text-dim); }
   .notified-icon svg { display: block; }
-  .notified-icon.active { color: var(--danger); animation: alarm-blink 1.3s ease-in-out infinite; }
-  .notified-icon.resolved { color: var(--text-faint); opacity: .45; }
-  .notified-icon.resolved:hover { opacity: 1; color: var(--text-dim); }
 
   /* Filtro por BU no painel Dashboards - mesmo texto "(Nome)" em mono usado no
      wordmark/BU do Snowflake, so que como pilula clicavel. */
@@ -586,31 +583,20 @@ function nameCell(nome, url, failed, notified) {
 }
 
 // Icone de sino pra linha que ja gerou alerta no Slack (reconcile_alerted.csv).
-// active=true (ainda sem correspondencia/resolvido) fica vermelho e piscando;
-// depois de execucoes seguidas com sucesso vira 'resolvido' - unica diferenca
-// visual e cor apagada + sem animacao, mas o icone continua no fluxo e o
-// tooltip (title, aparece no hover) sempre explica o estado, mesmo resolvido.
-function notifiedIcon(active, tooltip) {
-  const cls = active ? 'active' : 'resolved';
-  return `<span class="notified-icon ${cls}" title="${tooltip}">
+// So indica notificado ou nao - sem animacao e sem estado "resolvido".
+function notifiedIcon(tooltip) {
+  return `<span class="notified-icon" title="${tooltip}">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
     </svg>
   </span>`;
 }
 
-// Estado do sino pra uma linha: consulta reconcile_alerted.csv (chave
-// "airbyte:<nome>" ou "airflow:<dag_id>") e o pulso recente (ultimas 10
-// execucoes) pra decidir se ja "resolveu" (2+ sucessos seguidos desde entao).
-function notifiedState(alertedKeys, key, pulsoStr) {
+// Estado do sino pra uma linha: so consulta se a chave ("airbyte:<nome>" ou
+// "airflow:<dag_id>") esta em reconcile_alerted.csv - notificado ou nao.
+function notifiedState(alertedKeys, key) {
   if (!alertedKeys.has(key)) return null;
-  const ticks = (pulsoStr || '').split('|').filter(Boolean);
-  const lastTwo = ticks.slice(-2);
-  const resolved = lastTwo.length === 2 && lastTwo.every(t => t === 'success');
-  const tooltip = resolved
-    ? 'Já foi notificado via Slack (item sem catálogo no OM) — resolvido: últimas execuções com sucesso.'
-    : 'Notificado via Slack — item roda de verdade mas não está catalogado no OM.';
-  return notifiedIcon(!resolved, tooltip);
+  return notifiedIcon('Notificado via Slack — item roda de verdade mas não está catalogado no OM.');
 }
 
 function wireKpiFilters(containerId, tiles, ctrl) {
@@ -639,7 +625,7 @@ async function renderAirbyte() {
     defaultSortKey: 'ultima_execucao', defaultSortDir: -1,
     renderRow: r => `
     <tr>
-      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airbyte:' + r.nome, r.pulso))}
+      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airbyte:' + r.nome))}
       <td style="font-size:12.5px; color:var(--text-dim);">${r.responsavel || '—'}</td>
       <td>${statusDot(r.status_conexao)}</td>
       <td><span class="badge">${r.tipo_agendamento || '—'}</span></td>
@@ -674,7 +660,7 @@ async function renderAirflow() {
     defaultSortKey: 'ultima_execucao', defaultSortDir: -1,
     renderRow: r => `
     <tr>
-      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airflow:' + r.dag_id, r.pulso))}
+      ${nameCell(r.nome, r.url, r.ultimo_status === 'failed', notifiedState(alertedKeys, 'airflow:' + r.dag_id))}
       <td style="font-size:12.5px; color:var(--text-dim);">${r.responsavel || '—'}</td>
       <td style="font-family: var(--mono); font-size:12.5px; color:var(--text-dim);">${r.frequencia || '—'}</td>
       <td>${statusDot(r.ultimo_status)}</td>
