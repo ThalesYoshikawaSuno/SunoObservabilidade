@@ -329,6 +329,24 @@ def slack_ids_for_airbyte_connection(name):
     return BU_SLACK_MAP.get(classify_bu(name), [])
 
 
+# ── Nome do responsavel por BU (coluna "responsavel" da tabela Airbyte) ──────
+# Mesmo criterio do roteamento de Slack acima - so em nome legivel em vez de
+# member id. Sem BU identificada, cai no time de dados (dono generico).
+BU_RESPONSAVEL_MAP = {
+    "CONSULTORIA": "André Camacho",
+    "ASSET":       "Cedric Fagundes",
+    "ASSINATURAS": "Giovanni Vargas",
+    "RESEARCH":    "Giovanni Vargas",
+    "MARKETING":   "Giovanni Vargas",
+}
+
+
+def responsavel_for_airbyte_connection(name):
+    if "salesforce" in (name or "").lower():
+        return "André Camacho / Paulo Sousa"
+    return BU_RESPONSAVEL_MAP.get(classify_bu(name), "Time de Dados")
+
+
 # ── Airbyte ──────────────────────────────────────────────────────────────────
 
 def airbyte_token():
@@ -439,12 +457,11 @@ def fetch_airbyte():
         rows.append({
             "id": cid,
             "nome": name,
-            # Sem fonte de "responsavel" pra conexao Airbyte ainda - nem a API do
-            # Airbyte nem o OM tem esse dado hoje (diferente do Airflow, que pelo
-            # menos tem cobertura parcial via default_args no codigo). Deixar
-            # vazio em vez de inventar; coluna existe pra manter o mesmo layout
-            # de tabela entre Airbyte e Airflow no dashboard.
-            "responsavel": "",
+            # Airbyte nao tem fonte propria de "responsavel" (nem a API do
+            # Airbyte nem o OM tem esse dado) - usa o mesmo criterio por BU do
+            # roteamento de Slack (classify_bu), com "Time de Dados" pra quem
+            # nao cai em nenhuma BU conhecida.
+            "responsavel": responsavel_for_airbyte_connection(name),
             "status_conexao": status,
             "tipo_agendamento": schedule,
             "frequencia": frequencia,
@@ -967,8 +984,8 @@ def reconcile_and_alert(airbyte_rows=None):
         rows_by_name = {r["nome"]: r for r in airbyte_rows}
         real_names = set(rows_by_name)
         for name in sorted(real_names - om_conn_names):
-            # airbyte nao tem "responsavel" no dado real - roteamento aqui e
-            # por BU da conexao (classify_bu), com excecao pro Salesforce.
+            # Roteamento de Slack por BU da conexao (mesmo criterio da coluna
+            # "responsavel" em fetch_airbyte), com excecao pro Salesforce.
             routed = slack_ids_for_airbyte_connection(name)
             missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", routed))
 
