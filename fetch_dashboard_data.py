@@ -928,16 +928,16 @@ def _om_pipeline_names(s, service_name):
 # Um item some da lista (e volta a poder alertar) quando deixa de aparecer
 # como "faltando" - ou seja, foi corrigido (catalogado) ou parou de rodar. ──
 
-def _load_alerted_keys():
-    path = os.path.join(OUT_DIR, "reconcile_alerted.csv")
+def _load_alerted_keys(filename="reconcile_alerted.csv"):
+    path = os.path.join(OUT_DIR, filename)
     if not os.path.exists(path):
         return set()
     with open(path, newline="", encoding="utf-8") as f:
         return {row["key"] for row in csv.DictReader(f) if row.get("key")}
 
 
-def _save_alerted_keys(keys):
-    write_csv("reconcile_alerted.csv", ["key"], [{"key": k} for k in sorted(keys)])
+def _save_alerted_keys(keys, filename="reconcile_alerted.csv"):
+    write_csv(filename, ["key"], [{"key": k} for k in sorted(keys)])
 
 
 def reconcile_and_alert(airbyte_rows=None):
@@ -1010,6 +1010,50 @@ def reconcile_and_alert(airbyte_rows=None):
     _save_alerted_keys({k for k, _, _ in missing})
 
 
+# ── Alerta de falha (ultima execucao com status "failed") ───────────────────
+# Le airbyte.csv/airflow.csv (ja gravados nesta mesma run) em vez de receber
+# rows por parametro - airflow.csv so fica com "responsavel" preenchido apos o
+# merge_write_csv de fetch_airflow_status() gravar no disco (o retorno em
+# memoria da funcao nao carrega esse campo, so o arquivo mesclado carrega).
+#
+# Dedup: mesmo criterio do reconcile_and_alert - um item continua "alertado"
+# enquanto a ultima execucao dele seguir falhada (nao reenvia toda hora). Ele
+# so volta a poder alertar quando sai do estado de falha (proxima execucao
+# com sucesso) e falha de novo depois - aí sim conta como incidente novo.
+
+def detect_and_alert_failures():
+    print("Verificando execucoes com falha (Airbyte/Airflow)...")
+    failed = []  # lista de (key, mensagem, slack_ids_roteados)
+
+    for row in read_csv_as_dict("airbyte.csv", "id").values():
+        if row.get("ultimo_status") == "failed":
+            nome = row.get("nome", "")
+            msg = f"Conexao Airbyte `{nome}` falhou na ultima execucao (`{row.get('ultima_execucao', '?')}`)"
+            failed.append((f"airbyte_failed:{nome}", msg, slack_ids_for_airbyte_connection(nome)))
+
+    for row in read_csv_as_dict("airflow.csv", "id").values():
+        if row.get("ultimo_status") == "failed":
+            dag_id = row.get("dag_id") or row.get("nome", "")
+            msg = f"Airflow DAG `{row.get('nome', dag_id)}` falhou na ultima execucao (`{row.get('ultima_execucao', '?')}`)"
+            match_id = slack_id_for_responsible(row.get("responsavel"))
+            failed.append((f"airflow_failed:{dag_id}", msg, [match_id] if match_id else []))
+
+    already_alerted = _load_alerted_keys("failure_alerted.csv")
+    new_failed = [(k, m, r) for k, m, r in failed if k not in already_alerted]
+
+    if new_failed:
+        text = "🔴 *Dashboard Suno — falhas novas na ultima execucao:*\n" + "\n".join(f"• {m}" for _, m, _ in new_failed)
+        notify_slack_dm(text)  # resumo completo sempre vai pro usuario padrao
+        for _, msg, routed_ids in new_failed:
+            for sid in routed_ids:
+                notify_slack_dm(f"🔴 *Dashboard Suno:* {msg}", channel=sid)
+        print(f"  {len(new_failed)} falha(s) NOVA(s) — Slack notificado")
+    else:
+        print(f"  nada novo pra alertar ({len(failed)} falha(s) ja conhecida(s) continuam ativas)" if failed else "  nenhuma falha ativa")
+
+    _save_alerted_keys({k for k, _, _ in failed}, "failure_alerted.csv")
+
+
 FETCHERS = {
     "airbyte": fetch_airbyte,             # status+info Airbyte, hora em hora
     "airflow_status": fetch_airflow_status,  # status Airflow, hora em hora
@@ -1044,6 +1088,7 @@ def main():
             airbyte_rows = result
     if "reconcile" in only:
         reconcile_and_alert(airbyte_rows)
+        detect_and_alert_failures()
     if "om" in only:
         write_scripts_csv()
     write_meta()

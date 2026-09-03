@@ -1,0 +1,29 @@
+key
+airbyte_failed:Google Sheets - BASE METAS MARKETING CAMPANHAS SETEMBRO → Snowflake - RAW_MARKETING - MARKETING
+airbyte_failed:Google Sheets - POWER_AUTOMATE → Snowflake - RAW_SUNO_LEGADO - SUNO
+airbyte_failed:HubSpot → Snowflake - RAW_MARKETING_CRM
+airbyte_failed:Postgres SUNO app_api PHONE_VALIDATION → Snowflake RAW SUNO_LEGADO
+airflow_failed:automate_snowflake_etl
+airflow_failed:dados_mercado_supabase
+airflow_failed:dag_export_parquet
+airflow_failed:dev_att_pbi
+airflow_failed:dim_si_match_alert
+airflow_failed:fidcpr_carga_arquivos_drive.dag
+airflow_failed:funil_consultoria_export
+airflow_failed:ga4_transaction_id_dag
+airflow_failed:mcp_historico_estagios_oportunidade
+airflow_failed:midia_meta_ad_links
+airflow_failed:migrate_ovh_to_s3_start
+airflow_failed:monitoramento_snow_tb_qtd
+airflow_failed:news_ai_mcp.dag
+airflow_failed:ovh_to_aws_to_snowflake_year_arquivos_por_dias
+airflow_failed:research_henrique_lifecycle_export
+airflow_failed:research_henrique_retail_export
+airflow_failed:sbx_retail_scd2_sync
+airflow_failed:sbx_status_events_v2_retail
+airflow_failed:singulare_sftp_conn_backfill_0420
+airflow_failed:snowflake_key_rotation
+airflow_failed:snowflake_permissions_audit
+airflow_failed:sunocore_patch_callback
+airflow_failed:supabase_calculos_receitas
+airflow_failed:testpostgres
