@@ -26,4 +26,3 @@ airflow_failed:snowflake_key_rotation
 airflow_failed:snowflake_permissions_audit
 airflow_failed:sunocore_patch_callback
 airflow_failed:supabase_calculos_receitas
-airflow_failed:testpostgres
