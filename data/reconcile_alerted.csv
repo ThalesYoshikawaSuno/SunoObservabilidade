@@ -91,6 +91,8 @@ airbyte:SUNO - SQL_SERVER_NEXXUS_SUNO - SNOW_RAW_SUNO_LEGADO_NEXXUS
 airbyte:SUNO_NOTICIAS_WP - MYSQL_SUNO - SNOW_RAW_SUNO_LEGADO
 airbyte:SUNO_OMS - SQL_SERVER_NEXXUS_SUNO_OMS - SNOW_RAW_SUNO_LEGADO_NEXXUS
 airbyte:Salesforce → Snowflake - RAW_SALESFORCE - Salesforce
+airbyte:Salesforce → Snowflake - RAW_SALESFORCE - Salesforce (Account)
+airbyte:Salesforce → Snowflake - RAW_SALESFORCE - Salesforce (Opportunity)
 airbyte:Snowflake-SERVING_LAYER-MARKETING → Supabase - Production
 airbyte:Supabase → Snowflake - RAW_SUNO_LEGADO - SUNO_CODE
 airbyte:Twilio Taskrouter → Snowflake RAW_SUNO_LEGADO.PROJ_IA_WA_RS
