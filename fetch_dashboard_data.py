@@ -965,15 +965,14 @@ def reconcile_and_alert(airbyte_rows=None):
                 rr = s.get(f"{OM_URL}/api/v1/pipelines/name/{quote(AIRFLOW_SERVICE_NAME + '.' + dag_id, safe='')}",
                            verify=False, timeout=20)
                 if rr.status_code != 200:
-                    # DAG nao esta no OM, entao nao tem "owner" la - tenta o
-                    # autor do ultimo commit no GitLab como pista de quem
-                    # notificar, mesmo padrao usado no restante do script.
+                    # DAG nao esta no OM - "nao catalogado" so notifica o
+                    # usuario padrao (sem roteamento por BU/responsavel; isso
+                    # fica reservado pro alerta de execucao com falha).
                     hint = gitlab_last_author(dag_id)
                     msg = f"Airflow DAG `{dag_id}` roda de verdade mas nao esta catalogada no OM"
                     if hint:
                         msg += f" (ultimo commit: {hint})"
-                    routed = [slack_id_for_responsible(hint)] if slack_id_for_responsible(hint) else []
-                    missing.append((f"airflow:{dag_id}", msg, routed))
+                    missing.append((f"airflow:{dag_id}", msg, []))
         except requests.RequestException as e:
             print(f"  [reconcile] Airflow API indisponivel, pulando: {e}")
     else:
@@ -984,10 +983,9 @@ def reconcile_and_alert(airbyte_rows=None):
         rows_by_name = {r["nome"]: r for r in airbyte_rows}
         real_names = set(rows_by_name)
         for name in sorted(real_names - om_conn_names):
-            # Roteamento de Slack por BU da conexao (mesmo criterio da coluna
-            # "responsavel" em fetch_airbyte), com excecao pro Salesforce.
-            routed = slack_ids_for_airbyte_connection(name)
-            missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", routed))
+            # "nao catalogado" so notifica o usuario padrao - sem roteamento
+            # por BU (esse fica so pro alerta de execucao com falha).
+            missing.append((f"airbyte:{name}", f"Conexao Airbyte `{name}` roda de verdade mas nao esta catalogada no OM", []))
 
     # so alerta o que e novo desde a ultima run - item ja avisado antes (e
     # ainda faltando) nao gera notificacao repetida toda hora. Volta a
