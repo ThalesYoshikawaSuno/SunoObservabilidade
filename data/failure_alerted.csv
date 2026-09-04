@@ -2,7 +2,6 @@ key
 airbyte_failed:Google Sheets - BASE METAS MARKETING CAMPANHAS SETEMBRO → Snowflake - RAW_MARKETING - MARKETING
 airbyte_failed:Google Sheets - POWER_AUTOMATE → Snowflake - RAW_SUNO_LEGADO - SUNO
 airbyte_failed:HubSpot → Snowflake - RAW_MARKETING_CRM
-airbyte_failed:Instagram MEDIA → Snowflake - RAW_MARKETING - INSTAGRAM
 airbyte_failed:Postgres SUNO app_api PHONE_VALIDATION → Snowflake RAW SUNO_LEGADO
 airflow_failed:automate_snowflake_etl
 airflow_failed:dag_export_parquet
